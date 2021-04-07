@@ -28,67 +28,43 @@ export class PossibleMoves implements Visitor {
     }
   }
 
-  private tryNewPosition(start: Position, addFile: number, addRank: number) {
-    const newPosition = start.add(addFile, addRank);
+  private createMove(piece: PieceComponent, newPosition: Position) {
+    if (newPosition.null) {
+      return null;
+    }
     const pieceInNewPosition = this.pieces.find((piece) =>
       piece.position.equals(newPosition)
     );
-
-    return { newPosition, pieceInNewPosition };
+    if (pieceInNewPosition?.color === piece.color) {
+      return null;
+    }
+    return new Move(piece, newPosition, pieceInNewPosition);
   }
 
-  private addMove(
-    piece: PieceComponent,
-    to: Position,
-    takePiece?: PieceComponent
-  ) {
-    const move = new Move(piece, to, takePiece);
-    if (takePiece?.type === PieceType.King) {
+  private addMove(move: Move) {
+    this._moves.push(move);
+    if (move.capturePiece?.type === PieceType.King) {
       this._kingCaptureMoves.push(move);
     }
-    this._moves.push(move);
   }
 
   private possiblyAddMove(
     piece: PieceComponent,
-    {
-      start = piece.position,
-      addFile = 0,
-      addRank = 0,
-      recurse = false,
-      mustTake = false,
-      mustNotTake = false,
-    } = {}
-  ): boolean {
-    const { newPosition, pieceInNewPosition } = this.tryNewPosition(
-      start,
-      addFile,
-      addRank
-    );
-    if (newPosition.null) {
-      return false;
+    { start = piece.position, addFile = 0, addRank = 0, recurse = false } = {}
+  ): void {
+    const move = this.createMove(piece, start.add(addFile, addRank));
+    if (!move) {
+      return;
     }
-    if (pieceInNewPosition) {
-      if (!mustNotTake && pieceInNewPosition.color !== piece.color) {
-        this.addMove(piece, newPosition, pieceInNewPosition);
-      }
-      return false;
-    }
-    if (mustTake) {
-      return false;
-    }
-    this.addMove(piece, newPosition);
-    if (recurse) {
+    this.addMove(move);
+    if (recurse && !move.capturePiece) {
       return this.possiblyAddMove(piece, {
-        start: newPosition,
+        start: move.to,
         addFile,
         addRank,
         recurse,
-        mustTake,
-        mustNotTake,
       });
     }
-    return true;
   }
 
   visitPiece(piece: PieceComponent) {
@@ -107,6 +83,7 @@ export class PossibleMoves implements Visitor {
         this.possiblyAddMove(piece, { addFile: 0, addRank: 1 });
         this.possiblyAddMove(piece, { addFile: 1, addRank: 1 });
         return;
+
       case PieceType.Queen:
         this.possiblyAddMove(piece, {
           addFile: -1,
@@ -121,6 +98,7 @@ export class PossibleMoves implements Visitor {
         this.possiblyAddMove(piece, { addFile: 0, addRank: 1, recurse: true });
         this.possiblyAddMove(piece, { addFile: 1, addRank: 1, recurse: true });
         return;
+
       case PieceType.Bishop:
         this.possiblyAddMove(piece, {
           addFile: -1,
@@ -131,6 +109,7 @@ export class PossibleMoves implements Visitor {
         this.possiblyAddMove(piece, { addFile: -1, addRank: 1, recurse: true });
         this.possiblyAddMove(piece, { addFile: 1, addRank: 1, recurse: true });
         return;
+
       case PieceType.Knight:
         this.possiblyAddMove(piece, { addFile: -2, addRank: -1 });
         this.possiblyAddMove(piece, { addFile: -1, addRank: -2 });
@@ -141,30 +120,56 @@ export class PossibleMoves implements Visitor {
         this.possiblyAddMove(piece, { addFile: 1, addRank: 2 });
         this.possiblyAddMove(piece, { addFile: 2, addRank: 1 });
         return;
+
       case PieceType.Rook:
         this.possiblyAddMove(piece, { addFile: 0, addRank: -1, recurse: true });
         this.possiblyAddMove(piece, { addFile: -1, addRank: 0, recurse: true });
         this.possiblyAddMove(piece, { addFile: 1, addRank: 0, recurse: true });
         this.possiblyAddMove(piece, { addFile: 0, addRank: 1, recurse: true });
         return;
+
       case PieceType.Pawn:
         const addRank = piece.color === Color.White ? 1 : -1;
         const initialRank = piece.color === Color.White ? 1 : 6;
-        const canForward1 = this.possiblyAddMove(piece, {
-          addFile: 0,
-          addRank,
-          mustNotTake: true,
-        });
-        if (canForward1 && piece.position.rankIndex === initialRank) {
-          this.possiblyAddMove(piece, {
-            addFile: 0,
-            addRank: addRank * 2,
-            mustNotTake: true,
-          });
+        const promoteRank = piece.color === Color.White ? 7 : 0;
+
+        const addMoveAndPromote = (move: Move) => {
+          if (move.to.rankIndex === promoteRank) {
+            for (const promote of Move.PROMOTE_TYPES) {
+              this.addMove(
+                new Move(move.piece, move.to, move.capturePiece, promote)
+              );
+            }
+          } else {
+            this.addMove(move);
+          }
+        };
+
+        const advance1 = this.createMove(piece, piece.position.add(0, addRank));
+        if (advance1 && !advance1.capturePiece) {
+          addMoveAndPromote(advance1);
+          if (piece.position.rankIndex === initialRank) {
+            const advance2 = this.createMove(
+              piece,
+              piece.position.add(0, addRank * 2)
+            );
+            if (advance2 && !advance2.capturePiece) {
+              this.addMove(advance2);
+            }
+          }
         }
-        this.possiblyAddMove(piece, { addFile: -1, addRank, mustTake: true });
-        this.possiblyAddMove(piece, { addFile: 1, addRank, mustTake: true });
+
+        for (const addFile of [-1, 1]) {
+          const captureMove = this.createMove(
+            piece,
+            piece.position.add(addFile, addRank)
+          );
+          if (captureMove && captureMove.capturePiece) {
+            addMoveAndPromote(captureMove);
+          }
+        }
         return;
+
       default:
         assertUnreachable(piece.type);
     }

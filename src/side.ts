@@ -39,7 +39,7 @@ export class Side implements SideComponent {
       this.pieces.map((piece) => {
         if (move.piece === piece) {
           return piece.with(move.to, move.promote);
-        } else if (move.takePiece === piece) {
+        } else if (move.capturePiece === piece) {
           return piece.with(Position.NULL);
         } else {
           return piece;
