@@ -7,19 +7,22 @@ export class Move {
   readonly capturePiece?: PieceComponent;
   readonly promote?: typeof Move.PROMOTE_TYPES[number];
   readonly castle?: PieceComponent;
+  readonly castleTo?: Position;
 
   constructor(
     piece: PieceComponent,
     to: Position,
     capturePiece?: PieceComponent,
     promote?: typeof Move.PROMOTE_TYPES[number],
-    castle?: PieceComponent
+    castle?: PieceComponent,
+    castleTo?: Position
   ) {
     this.piece = piece;
     this.to = to;
     this.capturePiece = capturePiece;
     this.promote = promote;
     this.castle = castle;
+    this.castleTo = castleTo;
   }
 
   toString() {
@@ -29,6 +32,7 @@ export class Move {
       this.to,
       this.promote && `(${this.promote})`,
       this.capturePiece && `x ${this.capturePiece}`,
+      this.castle && "castle",
     ]
       .filter(Boolean)
       .join(" ");

@@ -41,6 +41,8 @@ export class Side implements SideComponent {
           return piece.with(move.to, move.promote);
         } else if (move.capturePiece === piece) {
           return piece.with(Position.NULL);
+        } else if (move.castle === piece && move.castleTo) {
+          return piece.with(move.castleTo);
         } else {
           return piece;
         }

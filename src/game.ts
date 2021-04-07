@@ -1,8 +1,6 @@
 import { Board } from "./board";
 import { BoardStatus } from "./board-status";
-import { PossibleMoves } from "./possible-moves";
 import { Printer } from "./printer";
-import { PieceType } from "./types";
 
 class Game {
   board = new Board();
@@ -35,7 +33,7 @@ class Game {
     } while (
       !this.boardStatus.isStaleMate &&
       !this.boardStatus.isCheckMate &&
-      this.board.moves.length < 300
+      this.board.moves.length < 100
     );
   }
 }

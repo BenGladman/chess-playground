@@ -1,3 +1,4 @@
+import { Move } from "./move";
 import type { Position } from "./position";
 
 export enum Color {
@@ -34,6 +35,7 @@ export interface BoardComponent extends Component {
   readonly black: SideComponent;
   readonly white: SideComponent;
   readonly turn: Color;
+  readonly lastMove: Move | null;
 }
 
 export interface Visitor {

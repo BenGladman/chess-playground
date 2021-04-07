@@ -1,6 +1,8 @@
 import { Board } from "./board";
 import { Move } from "./move";
-import { PossibleMoves } from "./possible-moves";
+import { PossibleCastleMoves } from "./possible-castle-moves";
+import { PossibleMainMoves } from "./possible-main-moves";
+import { PossiblePawnMoves } from "./possible-pawn-moves";
 
 export class BoardStatus {
   readonly board: Board;
@@ -12,10 +14,27 @@ export class BoardStatus {
     if (disableIsCheckAfterMove) {
       this.isCheckAfterMove = () => false;
     }
-    const possibles = new PossibleMoves((move) => this.isCheckAfterMove(move));
+
+    const isCheckAfterMove = this.isCheckAfterMove.bind(this);
+
+    const possibles = new PossibleMainMoves(isCheckAfterMove);
     board.accept(possibles);
-    this.possibleMoves = possibles.moves;
-    this.possibleKingCaptureMoves = possibles.kingCaptureMoves;
+
+    const pawnPossibles = new PossiblePawnMoves(isCheckAfterMove);
+    board.accept(pawnPossibles);
+
+    const castlePossibles = new PossibleCastleMoves(isCheckAfterMove);
+    board.accept(castlePossibles);
+
+    this.possibleMoves = [
+      ...possibles.moves,
+      ...pawnPossibles.moves,
+      ...castlePossibles.moves,
+    ];
+    this.possibleKingCaptureMoves = [
+      ...possibles.kingCaptureMoves,
+      ...pawnPossibles.kingCaptureMoves,
+    ];
   }
 
   private _isCheck?: boolean;

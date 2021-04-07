@@ -30,6 +30,20 @@ export class Position {
     return new Position(this.fileIndex + addFile, this.rankIndex + addRank);
   }
 
+  atFile(fileIndex: number) {
+    if (this.null) {
+      return this;
+    }
+    return new Position(fileIndex, this.rankIndex);
+  }
+
+  atRank(rankIndex: number) {
+    if (this.null) {
+      return this;
+    }
+    return new Position(this.fileIndex, rankIndex);
+  }
+
   equals(other: Position) {
     return (
       (this.null && other.null) ||
