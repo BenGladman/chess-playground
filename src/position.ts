@@ -30,7 +30,7 @@ export class Position {
     return new Position(this.fileIndex + addFile, this.rankIndex + addRank);
   }
 
-  equal(other: Position) {
+  equals(other: Position) {
     return (
       (this.null && other.null) ||
       (!this.null &&
@@ -44,10 +44,19 @@ export class Position {
     if (this.null) {
       return "null";
     }
-    return [
-      String.fromCodePoint(CODEPOINT_a + this.fileIndex),
-      String.fromCodePoint(CODEPOINT_1 + this.rankIndex),
-    ].join("");
+    return `${this.fileName}${this.rankName}`;
+  }
+
+  get fileName() {
+    return this.null
+      ? "null"
+      : String.fromCodePoint(CODEPOINT_a + this.fileIndex);
+  }
+
+  get rankName() {
+    return this.null
+      ? "null"
+      : String.fromCodePoint(CODEPOINT_1 + this.rankIndex);
   }
 
   static NULL = new Position(null, null);

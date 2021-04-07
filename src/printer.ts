@@ -1,3 +1,4 @@
+import { Position } from "./position";
 import {
   BoardComponent,
   Color,
@@ -58,19 +59,25 @@ export class Printer implements Visitor {
   toString() {
     const taken = (ix: number) => {
       if (ix === 0 && this.whiteTaken.length) {
-        return `   (${this.whiteTaken.join(" ")})`;
+        return `  taken: ${this.whiteTaken.join(" ")}`;
       }
       if (ix === 7 && this.blackTaken.length) {
-        return `   (${this.blackTaken.join(" ")})`;
+        return `  taken: ${this.blackTaken.join(" ")}`;
       }
       return "";
     };
 
     return this.board
-      .map((rank, ix) => `${rank.join(" ")}${taken(ix)}`)
+      .map(
+        (rank, ix) => `${Printer.rankLabels[ix]}  ${rank.join(" ")}${taken(ix)}`
+      )
       .reverse()
+      .concat(`   ${Printer.fileLabels}`)
       .join("\n");
   }
+
+  static fileLabels = indexes.map((i) => new Position(i, 0).fileName).join(" ");
+  static rankLabels = indexes.map((i) => new Position(0, i).rankName);
 }
 
 function assertUnreachable(x: never): never {

@@ -21,7 +21,7 @@ interface Component {
 export interface PieceComponent extends Component {
   readonly color: Color;
   readonly type: PieceType;
-  position: Position;
+  readonly position: Position;
 }
 
 export interface SideComponent extends Component {
@@ -32,7 +32,7 @@ export interface SideComponent extends Component {
 export interface BoardComponent extends Component {
   readonly black: SideComponent;
   readonly white: SideComponent;
-  readonly turn: SideComponent;
+  readonly turn: Color;
 }
 
 export interface Visitor {
