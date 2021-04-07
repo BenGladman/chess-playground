@@ -13,6 +13,11 @@ export class PossibleMoves implements Visitor {
   private pieces: readonly PieceComponent[] = [];
   private _moves: Move[] = [];
   private _kingCaptureMoves: Move[] = [];
+  private isCheckAfterMove: (move: Move) => boolean;
+
+  constructor(isCheckAfterMove: (move: Move) => boolean) {
+    this.isCheckAfterMove = isCheckAfterMove;
+  }
 
   visitBoard(board: BoardComponent) {
     this.pieces = [...board.black.pieces, ...board.white.pieces].filter(
@@ -32,13 +37,17 @@ export class PossibleMoves implements Visitor {
     if (newPosition.null) {
       return null;
     }
-    const pieceInNewPosition = this.pieces.find((piece) =>
+    const capturePiece = this.pieces.find((piece) =>
       piece.position.equals(newPosition)
     );
-    if (pieceInNewPosition?.color === piece.color) {
+    if (capturePiece?.color === piece.color) {
       return null;
     }
-    return new Move(piece, newPosition, pieceInNewPosition);
+    const move = new Move(piece, newPosition, capturePiece);
+    if (this.isCheckAfterMove(move)) {
+      return null;
+    }
+    return move;
   }
 
   private addMove(move: Move) {
@@ -130,7 +139,6 @@ export class PossibleMoves implements Visitor {
 
       case PieceType.Pawn:
         const addRank = piece.color === Color.White ? 1 : -1;
-        const initialRank = piece.color === Color.White ? 1 : 6;
         const promoteRank = piece.color === Color.White ? 7 : 0;
 
         const addMoveAndPromote = (move: Move) => {
@@ -148,7 +156,7 @@ export class PossibleMoves implements Visitor {
         const advance1 = this.createMove(piece, piece.position.add(0, addRank));
         if (advance1 && !advance1.capturePiece) {
           addMoveAndPromote(advance1);
-          if (piece.position.rankIndex === initialRank) {
+          if (!piece.hasMoved) {
             const advance2 = this.createMove(
               piece,
               piece.position.add(0, addRank * 2)

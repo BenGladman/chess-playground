@@ -27,8 +27,11 @@ export class Move {
       this.piece,
       this.piece.position,
       this.to,
-      this.capturePiece ? `x ${this.capturePiece}` : "",
-    ].join(" ");
+      this.promote && `(${this.promote})`,
+      this.capturePiece && `x ${this.capturePiece}`,
+    ]
+      .filter(Boolean)
+      .join(" ");
   }
 
   static PROMOTE_TYPES = [

@@ -22,6 +22,7 @@ export interface PieceComponent extends Component {
   readonly color: Color;
   readonly type: PieceType;
   readonly position: Position;
+  readonly hasMoved: boolean;
 }
 
 export interface SideComponent extends Component {

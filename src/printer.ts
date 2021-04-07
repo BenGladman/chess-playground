@@ -11,7 +11,9 @@ import {
 const indexes = [0, 1, 2, 3, 4, 5, 6, 7] as const;
 
 export class Printer implements Visitor {
-  private board = indexes.map(() => indexes.map(() => " "));
+  private board: string[][] = indexes.map((r) =>
+    indexes.map((f) => ((f + r) % 2 === 0 ? "░░" : "  "))
+  );
   private whiteTaken: string[] = [];
   private blackTaken: string[] = [];
 
@@ -40,17 +42,17 @@ export class Printer implements Visitor {
 
     switch (piece.type) {
       case PieceType.King:
-        return set("♔", "♚");
+        return set("♔ ", "♚ ");
       case PieceType.Queen:
-        return set("♕", "♛");
+        return set("♕ ", "♛ ");
       case PieceType.Bishop:
-        return set("♗", "♝");
+        return set("♗ ", "♝ ");
       case PieceType.Knight:
-        return set("♘", "♞");
+        return set("♘ ", "♞ ");
       case PieceType.Rook:
-        return set("♖", "♜");
+        return set("♖ ", "♜ ");
       case PieceType.Pawn:
-        return set("♙", "♟");
+        return set("♙ ", "♟ ");
       default:
         assertUnreachable(piece.type);
     }
@@ -59,20 +61,20 @@ export class Printer implements Visitor {
   toString() {
     const taken = (ix: number) => {
       if (ix === 0 && this.whiteTaken.length) {
-        return `  taken: ${this.whiteTaken.join(" ")}`;
+        return `  taken: ${this.whiteTaken.join("")}`;
       }
       if (ix === 7 && this.blackTaken.length) {
-        return `  taken: ${this.blackTaken.join(" ")}`;
+        return `  taken: ${this.blackTaken.join("")}`;
       }
       return "";
     };
 
     return this.board
       .map(
-        (rank, ix) => `${Printer.rankLabels[ix]}  ${rank.join(" ")}${taken(ix)}`
+        (rank, ix) => `${Printer.rankLabels[ix]} ${rank.join("")}${taken(ix)}`
       )
       .reverse()
-      .concat(`   ${Printer.fileLabels}`)
+      .concat(`  ${Printer.fileLabels}`)
       .join("\n");
   }
 

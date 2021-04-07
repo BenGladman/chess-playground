@@ -1,5 +1,4 @@
 import { Move } from "./move";
-import { PossibleMoves } from "./possible-moves";
 import { Side } from "./side";
 import { BoardComponent, Color, Visitor } from "./types";
 
@@ -8,8 +7,6 @@ export class Board implements BoardComponent {
   black: Side;
   turn: Color;
   moves: readonly Move[];
-  possibleMoves: readonly Move[];
-  possibleKingCaptureMoves: readonly Move[];
 
   constructor(
     white = new Side(Color.White),
@@ -21,48 +18,23 @@ export class Board implements BoardComponent {
     this.black = black;
     this.turn = turn;
     this.moves = moves;
+  }
 
-    const possibles = new PossibleMoves();
-    this.accept(possibles);
-    this.possibleMoves = possibles.moves;
-    this.possibleKingCaptureMoves = possibles.kingCaptureMoves;
+  get lastMove() {
+    return this.moves.length > 0 ? this.moves[this.moves.length - 1] : null;
   }
 
   get nextTurn() {
     return this.turn === Color.White ? Color.Black : Color.White;
   }
 
-  play(move: Move) {
+  play(move: Move | null) {
     return new Board(
-      this.white.play(move),
-      this.black.play(move),
+      move ? this.white.play(move) : this.white,
+      move ? this.black.play(move) : this.black,
       this.nextTurn,
-      this.moves.concat(move)
+      move ? this.moves.concat(move) : this.moves
     );
-  }
-
-  private _isCheck?: boolean;
-
-  get isCheck() {
-    if (this._isCheck === undefined) {
-      this._isCheck =
-        new Board(this.white, this.black, this.nextTurn)
-          .possibleKingCaptureMoves.length > 0;
-    }
-    return this._isCheck;
-  }
-
-  private _isCheckMate?: boolean;
-
-  get isCheckMate() {
-    if (this._isCheckMate === undefined) {
-      this._isCheckMate =
-        this.isCheck &&
-        this.possibleMoves.every(
-          (move) => this.play(move).possibleKingCaptureMoves.length > 0
-        );
-    }
-    return this._isCheckMate;
   }
 
   accept(visitor: Visitor) {

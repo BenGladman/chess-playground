@@ -1,10 +1,12 @@
 import { Board } from "./board";
+import { BoardStatus } from "./board-status";
 import { PossibleMoves } from "./possible-moves";
 import { Printer } from "./printer";
 import { PieceType } from "./types";
 
 class Game {
   board = new Board();
+  boardStatus = new BoardStatus(this.board);
 
   print() {
     const printer = new Printer();
@@ -13,22 +15,30 @@ class Game {
   }
 
   play() {
+    const randomMove = this.boardStatus.possibleMoves[
+      Math.floor(Math.random() * this.boardStatus.possibleMoves.length)
+    ];
+    this.board = this.board.play(randomMove);
+    this.boardStatus = new BoardStatus(this.board);
+  }
+
+  run() {
     this.print();
 
-    while (
-      this.board.possibleMoves.length > 0 &&
-      this.board.moves.length < 30
-    ) {
+    do {
       console.log("\n");
-      const randomMove = this.board.possibleMoves[
-        Math.floor(Math.random() * this.board.possibleMoves.length)
-      ];
-      console.log(`Random move #${this.board.moves.length + 1} ${randomMove}`);
-      this.board = this.board.play(randomMove);
+      this.play();
+      console.log(
+        `Random move #${this.board.moves.length} ${this.board.lastMove} ${this.boardStatus}`
+      );
       this.print();
-    }
+    } while (
+      !this.boardStatus.isStaleMate &&
+      !this.boardStatus.isCheckMate &&
+      this.board.moves.length < 300
+    );
   }
 }
 
 const game = new Game();
-game.play();
+game.run();
