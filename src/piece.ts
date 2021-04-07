@@ -16,15 +16,37 @@ export abstract class Piece {
   abstract readonly shortName: string;
 
   readonly color: Color;
-  readonly position: Position | null = null;
+  _position: Position;
+  _hasMoved = false;
 
-  constructor(color: Color, position: Position | null) {
+  constructor(color: Color, position: Position) {
     this.color = color;
-    this.position = position;
+    this._position = position;
+  }
+
+  move(position: Position) {
+    this._position = position;
+    this._hasMoved = true;
+  }
+
+  remove() {
+    this._position = Position.NULL;
+  }
+
+  get position() {
+    return this._position;
+  }
+
+  get hasMoved() {
+    return this._hasMoved;
   }
 
   accept(visitor: PieceVisitor) {
     visitor.visit(this);
+  }
+
+  toString() {
+    return `${this.color} ${this.name}`;
   }
 }
 
