@@ -10,9 +10,9 @@ import {
 } from "./types";
 
 export class PossiblePawnMoves extends PossibleMoves {
-  lastMove: Move | null = null;
-  enPassantPiece?: PieceComponent;
-  enPassantPosition?: Position;
+  private lastMove: Move | null = null;
+  private enPassantPiece?: PieceComponent;
+  private enPassantPosition?: Position;
 
   visitBoard(board: BoardComponent) {
     this.lastMove = board.lastMove;
@@ -29,9 +29,7 @@ export class PossiblePawnMoves extends PossibleMoves {
       const advance2rank = side.color === Color.White ? 4 : 3;
       if (this.lastMove.to.rankIndex === advance2rank) {
         this.enPassantPosition = this.lastMove.to.atRank(advance1rank);
-        this.enPassantPiece = this.pieces.find((piece) =>
-          piece.position.equals(this.lastMove!.to)
-        );
+        this.enPassantPiece = this.pieceAtPosition(this.lastMove.to);
       }
     }
 

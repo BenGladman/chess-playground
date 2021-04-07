@@ -12,7 +12,7 @@ import {
 export abstract class PossibleMoves implements Visitor {
   private _moves: Move[] = [];
   private _kingCaptureMoves: Move[] = [];
-  protected pieces: readonly PieceComponent[] = [];
+  private pieces: readonly PieceComponent[] = [];
   protected isCheckAfterMove: (move: Move) => boolean;
 
   constructor(isCheckAfterMove: (move: Move) => boolean) {
@@ -35,13 +35,15 @@ export abstract class PossibleMoves implements Visitor {
 
   visitPiece(piece: PieceComponent) {}
 
+  protected pieceAtPosition(position: Position) {
+    return this.pieces.find((piece) => piece.position.equals(position));
+  }
+
   protected createMove(piece: PieceComponent, newPosition: Position) {
     if (newPosition.null) {
       return null;
     }
-    const capturePiece = this.pieces.find((piece) =>
-      piece.position.equals(newPosition)
-    );
+    const capturePiece = this.pieceAtPosition(newPosition);
     if (capturePiece?.color === piece.color) {
       return null;
     }

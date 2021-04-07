@@ -28,11 +28,7 @@ export class PossibleCastleMoves extends PossibleMoves {
       rook.position.fileIndex === 0 ? king.position.fileIndex - 1 : 6;
 
     for (let fileIndex = emptyFrom; fileIndex <= emptyTo; fileIndex++) {
-      if (
-        this.pieces.find((piece) =>
-          piece.position.equals(king.position.atFile(fileIndex))
-        )
-      ) {
+      if (this.pieceAtPosition(king.position.atFile(fileIndex))) {
         return;
       }
     }
