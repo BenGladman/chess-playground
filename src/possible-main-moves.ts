@@ -1,6 +1,5 @@
-import { Move } from "./move";
 import { PossibleMoves } from "./possible-moves";
-import { Color, PieceComponent, PieceType, SideComponent } from "./types";
+import { PieceComponent, PieceType } from "./types";
 
 export class PossibleMainMoves extends PossibleMoves {
   private possiblyAddMove(
