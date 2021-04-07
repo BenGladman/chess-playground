@@ -1,13 +1,18 @@
-import { Piece } from "./piece";
 import { Position } from "./position";
+import { PieceComponent } from "./types";
 
 export class Move {
-  piece: Piece;
-  from: Position;
-  to: Position;
-  takePiece?: Piece;
+  readonly piece: PieceComponent;
+  readonly from: Position;
+  readonly to: Position;
+  readonly takePiece?: PieceComponent;
 
-  constructor(piece: Piece, from: Position, to: Position, takePiece?: Piece) {
+  constructor(
+    piece: PieceComponent,
+    from: Position,
+    to: Position,
+    takePiece?: PieceComponent
+  ) {
     this.piece = piece;
     this.from = from;
     this.to = to;
@@ -15,9 +20,9 @@ export class Move {
   }
 
   play() {
-    this.piece.move(this.to);
+    this.piece.position = this.to;
     if (this.takePiece) {
-      this.takePiece.remove();
+      this.takePiece.position = Position.NULL;
     }
   }
 

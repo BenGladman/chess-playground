@@ -1,35 +1,51 @@
 import { Move } from "./move";
-import { Piece, PieceName } from "./piece";
 import { Position } from "./position";
+import {
+  BoardComponent,
+  Color,
+  PieceComponent,
+  PieceType,
+  SideComponent,
+  Visitor,
+} from "./types";
 
-export class PossibleMoves implements PossibleMoves {
-  private pieces: readonly Piece[];
+export class PossibleMoves implements Visitor {
+  private pieces: readonly PieceComponent[] = [];
   private _moves: Move[] = [];
 
-  constructor(pieces: readonly Piece[]) {
-    this.pieces = pieces;
+  visitBoard(board: BoardComponent) {
+    this.pieces = [...board.black.pieces, ...board.white.pieces].filter(
+      (piece) => !piece.position.null
+    );
+    board.turn.accept(this);
+  }
+
+  visitSide(side: SideComponent) {
+    for (const piece of side.pieces) {
+      piece.accept(this);
+    }
   }
 
   private tryNewPosition(start: Position, addFile: number, addRank: number) {
     const newPosition = start.add(addFile, addRank);
-    const pieceInNewPosition = this.pieces.find(
-      (p) => !p.position.null && p.position.equal(newPosition)
+    const pieceInNewPosition = this.pieces.find((piece) =>
+      piece.position.equal(newPosition)
     );
 
     return { newPosition, pieceInNewPosition };
   }
 
   private addMove(
-    piece: Piece,
+    piece: PieceComponent,
     from: Position,
     to: Position,
-    takePiece?: Piece
+    takePiece?: PieceComponent
   ) {
     this._moves.push(new Move(piece, from, to, takePiece));
   }
 
   private possiblyAddMove(
-    piece: Piece,
+    piece: PieceComponent,
     start: Position,
     addFile: number,
     addRank: number,
@@ -63,13 +79,13 @@ export class PossibleMoves implements PossibleMoves {
     return true;
   }
 
-  visit(piece: Piece) {
-    if (!piece.position) {
+  visitPiece(piece: PieceComponent) {
+    if (piece.position.null) {
       return;
     }
 
-    switch (piece.name) {
-      case PieceName.King:
+    switch (piece.type) {
+      case PieceType.King:
         this.possiblyAddMove(piece, piece.position, -1, -1);
         this.possiblyAddMove(piece, piece.position, 0, -1);
         this.possiblyAddMove(piece, piece.position, 1, -1);
@@ -79,7 +95,7 @@ export class PossibleMoves implements PossibleMoves {
         this.possiblyAddMove(piece, piece.position, 0, 1);
         this.possiblyAddMove(piece, piece.position, 1, 1);
         return;
-      case PieceName.Queen:
+      case PieceType.Queen:
         this.possiblyAddMove(piece, piece.position, -1, -1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 0, -1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 1, -1, { recurse: true });
@@ -89,13 +105,13 @@ export class PossibleMoves implements PossibleMoves {
         this.possiblyAddMove(piece, piece.position, 0, 1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 1, 1, { recurse: true });
         return;
-      case PieceName.Bishop:
+      case PieceType.Bishop:
         this.possiblyAddMove(piece, piece.position, -1, -1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 1, -1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, -1, 1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 1, 1, { recurse: true });
         return;
-      case PieceName.Knight:
+      case PieceType.Knight:
         this.possiblyAddMove(piece, piece.position, -2, -1);
         this.possiblyAddMove(piece, piece.position, -1, -2);
         this.possiblyAddMove(piece, piece.position, 1, -2);
@@ -105,14 +121,15 @@ export class PossibleMoves implements PossibleMoves {
         this.possiblyAddMove(piece, piece.position, 1, 2);
         this.possiblyAddMove(piece, piece.position, 2, 1);
         return;
-      case PieceName.Rook:
+      case PieceType.Rook:
         this.possiblyAddMove(piece, piece.position, 0, -1, { recurse: true });
         this.possiblyAddMove(piece, piece.position, -1, 0, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 1, 0, { recurse: true });
         this.possiblyAddMove(piece, piece.position, 0, 1, { recurse: true });
         return;
-      case PieceName.Pawn:
-        const addRank = piece.color === "W" ? 1 : -1;
+      case PieceType.Pawn:
+        const addRank = piece.color === Color.White ? 1 : -1;
+        const initialRank = piece.color === Color.White ? 1 : 6;
         const canForward1 = this.possiblyAddMove(
           piece,
           piece.position,
@@ -120,7 +137,7 @@ export class PossibleMoves implements PossibleMoves {
           addRank,
           { mustNotTake: true }
         );
-        if (canForward1 && !piece.hasMoved) {
+        if (canForward1 && piece.position.rankIndex === initialRank) {
           this.possiblyAddMove(piece, piece.position, 0, addRank * 2, {
             mustNotTake: true,
           });
@@ -133,7 +150,7 @@ export class PossibleMoves implements PossibleMoves {
         });
         return;
       default:
-        assertUnreachable(piece.name);
+        assertUnreachable(piece.type);
     }
   }
 

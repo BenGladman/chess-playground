@@ -1,39 +1,57 @@
-import { Piece, PieceVisitor, Color, PieceName } from "./piece";
+import {
+  BoardComponent,
+  Color,
+  PieceComponent,
+  PieceType,
+  SideComponent,
+  Visitor,
+} from "./types";
 
 const indexes = [0, 1, 2, 3, 4, 5, 6, 7] as const;
 
-export class Printer implements PieceVisitor {
+export class Printer implements Visitor {
   private board = indexes.map(() => indexes.map(() => " "));
   private whiteTaken: string[] = [];
   private blackTaken: string[] = [];
 
-  visit(piece: Piece) {
+  visitBoard(board: BoardComponent) {
+    board.white.accept(this);
+    board.black.accept(this);
+  }
+
+  visitSide(side: SideComponent) {
+    for (const piece of side.pieces) {
+      piece.accept(this);
+    }
+  }
+
+  visitPiece(piece: PieceComponent) {
     const set = (white: string, black: string) => {
-      if (piece._position) {
-        this.board[piece._position.rankIndex][piece._position.fileIndex] =
-          piece.color === "W" ? white : black;
-      } else if (piece.color === "W") {
+      if (!piece.position.null) {
+        this.board[piece.position.rankIndex][piece.position.fileIndex] =
+          piece.color === Color.White ? white : black;
+      } else if (piece.color === Color.White) {
         this.whiteTaken.push(white);
       } else {
         this.blackTaken.push(black);
       }
     };
 
-    switch (piece.name) {
-      case PieceName.King:
+    switch (piece.type) {
+      case PieceType.King:
         return set("♔", "♚");
-      case PieceName.Queen:
+      case PieceType.Queen:
         return set("♕", "♛");
-      case PieceName.Bishop:
+      case PieceType.Bishop:
         return set("♗", "♝");
-      case PieceName.Knight:
+      case PieceType.Knight:
         return set("♘", "♞");
-      case PieceName.Rook:
+      case PieceType.Rook:
         return set("♖", "♜");
-      case PieceName.Pawn:
+      case PieceType.Pawn:
         return set("♙", "♟");
       default:
-        assertUnreachable(piece.name);
+        assertUnreachable(piece.type);
     }
   }
 
