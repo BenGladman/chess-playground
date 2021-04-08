@@ -20,11 +20,11 @@ export class PossibleCastleMoves extends PossibleMoves {
     }
 
     for (const rook of rooks) {
-      this.possiblyAddCastle(king, rook);
+      this.tryCastle(king, rook);
     }
   }
 
-  private possiblyAddCastle(king: PieceComponent, rook: PieceComponent) {
+  private tryCastle(king: PieceComponent, rook: PieceComponent) {
     const emptyFrom =
       rook.position.fileIndex === 0 ? 0 : king.position.fileIndex + 1;
     const emptyTo =
@@ -61,10 +61,7 @@ export class PossibleCastleMoves extends PossibleMoves {
       rook,
       newRookPosition
     );
-    if (this.isCheckAfterMove(castleMove)) {
-      return;
-    }
 
-    this.addMove(castleMove);
+    this.possiblyAddMove(castleMove);
   }
 }

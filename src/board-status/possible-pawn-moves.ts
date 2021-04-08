@@ -48,7 +48,7 @@ export class PossiblePawnMoves extends PossibleMoves {
           piece.position.add(0, addRank * 2)
         );
         if (advance2 && !advance2.capturePiece) {
-          this.addMove(advance2);
+          this.possiblyAddMove(advance2);
         }
       }
     }
@@ -65,9 +65,7 @@ export class PossiblePawnMoves extends PossibleMoves {
             newPosition,
             this.enPassantPiece
           );
-          if (!this.isCheckAfterMove(enPassantMove)) {
-            this.addMove(enPassantMove);
-          }
+          this.possiblyAddMove(enPassantMove);
         }
       }
     }
@@ -84,10 +82,10 @@ export class PossiblePawnMoves extends PossibleMoves {
           move.capturePiece,
           promote
         );
-        this.addMove(promoteMove);
+        this.possiblyAddMove(promoteMove);
       }
     } else {
-      this.addMove(move);
+      this.possiblyAddMove(move);
     }
   }
 }

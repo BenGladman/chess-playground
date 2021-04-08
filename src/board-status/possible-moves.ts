@@ -58,14 +58,13 @@ export abstract class PossibleMoves implements Visitor {
       return null;
     }
     const move = new Move(piece, newPosition, capturePiece);
-    if (this.isCheckAfterMove(move)) {
-      return null;
-    }
     return move;
   }
 
-  protected addMove(move: Move) {
-    this._moves.push(move);
+  protected possiblyAddMove(move: Move) {
+    if (!this.isCheckAfterMove(move)) {
+      this._moves.push(move);
+    }
   }
 
   get moves(): readonly Move[] {
