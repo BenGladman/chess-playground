@@ -1,7 +1,12 @@
-import { Move } from "./move";
+import {
+  Color,
+  Move,
+  PieceType,
+  Position,
+  SideComponent,
+  Visitor,
+} from "./core";
 import { Piece } from "./piece";
-import { Position } from "./position";
-import { Color, PieceType, SideComponent, Visitor } from "./types";
 
 export class Side implements SideComponent {
   readonly color: Color;

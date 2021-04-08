@@ -3,7 +3,6 @@ import {
   BoardComponent,
   Color,
   PieceComponent,
-  PieceType,
   SideComponent,
   Visitor,
 } from "./types";
@@ -14,8 +13,8 @@ export class Printer implements Visitor {
   private board: string[][] = indexes.map((r) =>
     indexes.map((f) => ((f + r) % 2 === 0 ? "░░" : "  "))
   );
-  private whiteTaken: string[] = [];
-  private blackTaken: string[] = [];
+  private whiteCaptured: string[] = [];
+  private blackCaptured: string[] = [];
 
   visitBoard(board: BoardComponent) {
     board.white.accept(this);
@@ -57,19 +56,19 @@ export class Printer implements Visitor {
       this.board[piece.position.rankIndex][piece.position.fileIndex] =
         piece.color === Color.White ? white : black;
     } else if (piece.color === Color.White) {
-      this.whiteTaken.push(white);
+      this.whiteCaptured.push(white);
     } else {
-      this.blackTaken.push(black);
+      this.blackCaptured.push(black);
     }
   }
 
   toString() {
     const taken = (ix: number) => {
-      if (ix === 0 && this.whiteTaken.length) {
-        return `  taken: ${this.whiteTaken.join("")}`;
+      if (ix === 0 && this.whiteCaptured.length) {
+        return `  taken: ${this.whiteCaptured.join("")}`;
       }
-      if (ix === 7 && this.blackTaken.length) {
-        return `  taken: ${this.blackTaken.join("")}`;
+      if (ix === 7 && this.blackCaptured.length) {
+        return `  taken: ${this.blackCaptured.join("")}`;
       }
       return "";
     };

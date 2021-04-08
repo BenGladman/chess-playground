@@ -1,5 +1,11 @@
-import { Position, PositionIndex } from "./position";
-import { Color, PieceComponent, PieceType, Visitor } from "./types";
+import {
+  Color,
+  PieceComponent,
+  PieceType,
+  Position,
+  PositionIndex,
+  Visitor,
+} from "./core";
 
 export class Piece implements PieceComponent {
   readonly color: Color;

@@ -1,16 +1,14 @@
-import { Board } from "./board";
-import { Move } from "./move";
+import { BoardComponent, Move, PieceType } from "../core";
 import { PossibleCastleMoves } from "./possible-castle-moves";
 import { PossibleMainMoves } from "./possible-main-moves";
 import { PossiblePawnMoves } from "./possible-pawn-moves";
-import { PieceType } from "./types";
 
 export class BoardStatus {
-  readonly board: Board;
+  readonly board: BoardComponent;
   readonly possibleMoves: readonly Move[];
   readonly isCheckOtherSide: boolean;
 
-  constructor(board: Board) {
+  protected constructor(board: BoardComponent) {
     this.board = board;
 
     const possibleMoves: Move[] = [];
@@ -66,6 +64,10 @@ export class BoardStatus {
       : this.isStaleMate
       ? "STALEMATE"
       : movesString;
+  }
+
+  static create(board: BoardComponent) {
+    return new BoardStatus(board);
   }
 }
 

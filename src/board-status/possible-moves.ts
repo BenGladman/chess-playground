@@ -1,12 +1,12 @@
-import { Move } from "./move";
-import { Position } from "./position";
 import {
   BoardComponent,
   Color,
+  Move,
   PieceComponent,
+  Position,
   SideComponent,
   Visitor,
-} from "./types";
+} from "../core";
 
 export abstract class PossibleMoves implements Visitor {
   private _moves: Move[] = [];

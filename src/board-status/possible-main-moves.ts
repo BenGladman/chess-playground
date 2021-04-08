@@ -1,5 +1,5 @@
+import { PieceComponent } from "../core";
 import { PossibleMoves } from "./possible-moves";
-import { PieceComponent, PieceType } from "./types";
 
 export class PossibleMainMoves extends PossibleMoves {
   private possiblyAddMove(

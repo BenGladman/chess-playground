@@ -6,6 +6,7 @@ const CODEPOINT_1 = "1".codePointAt(0)!;
 function isPositionIndex(index: number | null): index is PositionIndex {
   return index !== null && index >= 0 && index <= 7;
 }
+
 export class Position {
   readonly fileIndex: PositionIndex;
   readonly rankIndex: PositionIndex;

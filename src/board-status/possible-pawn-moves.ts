@@ -1,13 +1,13 @@
-import { Move } from "./move";
-import { Position } from "./position";
-import { PossibleMoves } from "./possible-moves";
 import {
   BoardComponent,
   Color,
+  Move,
   PieceComponent,
   PieceType,
+  Position,
   SideComponent,
-} from "./types";
+} from "../core";
+import { PossibleMoves } from "./possible-moves";
 
 export class PossiblePawnMoves extends PossibleMoves {
   private lastMove: Move | null = null;

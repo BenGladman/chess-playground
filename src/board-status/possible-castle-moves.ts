@@ -1,6 +1,5 @@
-import { Move } from "./move";
+import { Move, PieceComponent, PieceType, SideComponent } from "../core";
 import { PossibleMoves } from "./possible-moves";
-import { PieceComponent, PieceType, SideComponent } from "./types";
 
 export class PossibleCastleMoves extends PossibleMoves {
   visitSide(side: SideComponent) {

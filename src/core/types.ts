@@ -36,6 +36,7 @@ export interface BoardComponent extends Component {
   readonly white: SideComponent;
   readonly turn: Color;
   readonly lastMove: Move | null;
+  play(move: Move | null): BoardComponent;
 }
 
 export interface Visitor {

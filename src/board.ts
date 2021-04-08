@@ -1,6 +1,6 @@
-import { Move } from "./move";
+import { BoardStatus } from "./board-status";
+import { BoardComponent, Color, Move, Printer, Visitor } from "./core";
 import { Side } from "./side";
-import { BoardComponent, Color, Visitor } from "./types";
 
 export class Board implements BoardComponent {
   white: Side;
@@ -35,6 +35,21 @@ export class Board implements BoardComponent {
       this.nextTurn,
       move ? this.moves.concat(move) : this.moves
     );
+  }
+
+  _status?: BoardStatus;
+
+  get status(): BoardStatus {
+    if (this._status === undefined) {
+      this._status = BoardStatus.create(this);
+    }
+    return this._status;
+  }
+
+  print() {
+    const printer = new Printer();
+    this.accept(printer);
+    console.log(printer.toString());
   }
 
   accept(visitor: Visitor) {
