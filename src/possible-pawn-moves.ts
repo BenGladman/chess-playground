@@ -59,7 +59,7 @@ export class PossiblePawnMoves extends PossibleMoves {
       if (captureMove && captureMove.capturePiece) {
         this.addMoveAndPromote(captureMove);
       } else if (this.enPassantPiece && this.enPassantPosition) {
-        if (newPosition.equals(this.enPassantPosition)) {
+        if (newPosition === this.enPassantPosition) {
           const enPassantMove = new Move(
             piece,
             newPosition,

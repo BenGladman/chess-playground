@@ -48,7 +48,7 @@ export abstract class PossibleMoves implements Visitor {
   visitPawn(piece: PieceComponent) {}
 
   protected pieceAtPosition(position: Position) {
-    return this.pieces.find((piece) => piece.position.equals(position));
+    return this.pieces.find((piece) => piece.position === position);
   }
 
   protected createMove(piece: PieceComponent, newPosition: Position) {

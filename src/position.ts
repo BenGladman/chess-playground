@@ -47,16 +47,6 @@ export class Position {
     return Position.get(this.fileIndex, rankIndex);
   }
 
-  equals(other: Position) {
-    return (
-      (this.isNull && other.isNull) ||
-      (!this.isNull &&
-        !other.isNull &&
-        this.fileIndex === other.fileIndex &&
-        this.rankIndex === other.rankIndex)
-    );
-  }
-
   toString() {
     if (this.isNull) {
       return "null";
