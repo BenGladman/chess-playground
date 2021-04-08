@@ -3,14 +3,17 @@ import { Move } from "./move";
 import { PossibleCastleMoves } from "./possible-castle-moves";
 import { PossibleMainMoves } from "./possible-main-moves";
 import { PossiblePawnMoves } from "./possible-pawn-moves";
+import { PieceType } from "./types";
 
 export class BoardStatus {
   readonly board: Board;
-  readonly possibleMoves: Move[] = [];
-  readonly possibleKingCaptureMoves: Move[] = [];
+  readonly possibleMoves: readonly Move[];
+  readonly isCheckOtherSide: boolean;
 
   constructor(board: Board) {
     this.board = board;
+
+    const possibleMoves: Move[] = [];
 
     for (const PossibleMoves of [
       PossibleMainMoves,
@@ -21,9 +24,14 @@ export class BoardStatus {
         this.isCheckAfterMove(move)
       );
       board.accept(possibles);
-      this.possibleMoves.push(...possibles.moves);
-      this.possibleKingCaptureMoves.push(...possibles.kingCaptureMoves);
+      possibleMoves.push(...possibles.moves);
     }
+
+    this.possibleMoves = possibleMoves;
+    this.isCheckOtherSide =
+      possibleMoves.find(
+        (move) => move.capturePiece?.type === PieceType.King
+      ) !== undefined;
   }
 
   private _isCheck?: boolean;
@@ -44,9 +52,8 @@ export class BoardStatus {
   }
 
   protected isCheckAfterMove(move: Move | null) {
-    const isCheck =
-      new BoardStatusRecursive(this.board.play(move)).possibleKingCaptureMoves
-        .length > 0;
+    const isCheck = new BoardStatusRecursive(this.board.play(move))
+      .isCheckOtherSide;
     return isCheck;
   }
 

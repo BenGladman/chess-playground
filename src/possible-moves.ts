@@ -4,14 +4,12 @@ import {
   BoardComponent,
   Color,
   PieceComponent,
-  PieceType,
   SideComponent,
   Visitor,
 } from "./types";
 
 export abstract class PossibleMoves implements Visitor {
   private _moves: Move[] = [];
-  private _kingCaptureMoves: Move[] = [];
   private pieces: readonly PieceComponent[] = [];
   protected isCheckAfterMove: (move: Move) => boolean;
 
@@ -68,16 +66,9 @@ export abstract class PossibleMoves implements Visitor {
 
   protected addMove(move: Move) {
     this._moves.push(move);
-    if (move.capturePiece?.type === PieceType.King) {
-      this._kingCaptureMoves.push(move);
-    }
   }
 
   get moves(): readonly Move[] {
     return this._moves;
-  }
-
-  get kingCaptureMoves(): readonly Move[] {
-    return this._kingCaptureMoves;
   }
 }
