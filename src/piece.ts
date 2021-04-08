@@ -24,7 +24,8 @@ export class Piece implements PieceComponent {
   }
 
   accept(visitor: Visitor) {
-    visitor.visitPiece(this);
+    const visitMethod = `visit${this.type}` as const;
+    visitor[visitMethod](this);
   }
 
   toString() {

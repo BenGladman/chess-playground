@@ -36,11 +36,7 @@ export class PossiblePawnMoves extends PossibleMoves {
     super.visitSide(side);
   }
 
-  visitPiece(piece: PieceComponent) {
-    if (piece.position.null || piece.type !== PieceType.Pawn) {
-      return;
-    }
-
+  visitPawn(piece: PieceComponent) {
     const addRank = piece.color === Color.White ? 1 : -1;
 
     const advance1 = this.createMove(piece, piece.position.add(0, addRank));
@@ -77,7 +73,7 @@ export class PossiblePawnMoves extends PossibleMoves {
     }
   }
 
-  addMoveAndPromote(move: Move) {
+  private addMoveAndPromote(move: Move) {
     const promoteRank = move.piece.color === Color.White ? 7 : 0;
 
     if (move.to.rankIndex === promoteRank) {

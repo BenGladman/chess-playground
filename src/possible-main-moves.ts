@@ -21,66 +21,50 @@ export class PossibleMainMoves extends PossibleMoves {
     }
   }
 
-  visitPiece(piece: PieceComponent) {
-    if (piece.position.null) {
-      return;
-    }
+  visitKing(piece: PieceComponent) {
+    this.possiblyAddMove(piece, { addFile: -1, addRank: -1 });
+    this.possiblyAddMove(piece, { addFile: 0, addRank: -1 });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: -1 });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 0 });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 0 });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 1 });
+    this.possiblyAddMove(piece, { addFile: 0, addRank: 1 });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 1 });
+  }
 
-    switch (piece.type) {
-      case PieceType.King:
-        this.possiblyAddMove(piece, { addFile: -1, addRank: -1 });
-        this.possiblyAddMove(piece, { addFile: 0, addRank: -1 });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: -1 });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 0 });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 0 });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 1 });
-        this.possiblyAddMove(piece, { addFile: 0, addRank: 1 });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 1 });
-        return;
+  visitQueen(piece: PieceComponent) {
+    this.possiblyAddMove(piece, { addFile: -1, addRank: -1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 0, addRank: -1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: -1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 0, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 0, recurse: true });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 0, addRank: 1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 1, recurse: true });
+  }
 
-      case PieceType.Queen:
-        this.possiblyAddMove(piece, {
-          addFile: -1,
-          addRank: -1,
-          recurse: true,
-        });
-        this.possiblyAddMove(piece, { addFile: 0, addRank: -1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: -1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 0, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 0, recurse: true });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 0, addRank: 1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 1, recurse: true });
-        return;
+  visitBishop(piece: PieceComponent) {
+    this.possiblyAddMove(piece, { addFile: -1, addRank: -1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: -1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 1, recurse: true });
+  }
 
-      case PieceType.Bishop:
-        this.possiblyAddMove(piece, {
-          addFile: -1,
-          addRank: -1,
-          recurse: true,
-        });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: -1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 1, recurse: true });
-        return;
+  visitKnight(piece: PieceComponent) {
+    this.possiblyAddMove(piece, { addFile: -2, addRank: -1 });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: -2 });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: -2 });
+    this.possiblyAddMove(piece, { addFile: 2, addRank: -1 });
+    this.possiblyAddMove(piece, { addFile: -2, addRank: 1 });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 2 });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 2 });
+    this.possiblyAddMove(piece, { addFile: 2, addRank: 1 });
+  }
 
-      case PieceType.Knight:
-        this.possiblyAddMove(piece, { addFile: -2, addRank: -1 });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: -2 });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: -2 });
-        this.possiblyAddMove(piece, { addFile: 2, addRank: -1 });
-        this.possiblyAddMove(piece, { addFile: -2, addRank: 1 });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 2 });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 2 });
-        this.possiblyAddMove(piece, { addFile: 2, addRank: 1 });
-        return;
-
-      case PieceType.Rook:
-        this.possiblyAddMove(piece, { addFile: 0, addRank: -1, recurse: true });
-        this.possiblyAddMove(piece, { addFile: -1, addRank: 0, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 1, addRank: 0, recurse: true });
-        this.possiblyAddMove(piece, { addFile: 0, addRank: 1, recurse: true });
-        return;
-    }
+  visitRook(piece: PieceComponent) {
+    this.possiblyAddMove(piece, { addFile: 0, addRank: -1, recurse: true });
+    this.possiblyAddMove(piece, { addFile: -1, addRank: 0, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 1, addRank: 0, recurse: true });
+    this.possiblyAddMove(piece, { addFile: 0, addRank: 1, recurse: true });
   }
 }

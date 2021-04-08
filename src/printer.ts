@@ -28,33 +28,38 @@ export class Printer implements Visitor {
     }
   }
 
-  visitPiece(piece: PieceComponent) {
-    const set = (white: string, black: string) => {
-      if (!piece.position.null) {
-        this.board[piece.position.rankIndex][piece.position.fileIndex] =
-          piece.color === Color.White ? white : black;
-      } else if (piece.color === Color.White) {
-        this.whiteTaken.push(white);
-      } else {
-        this.blackTaken.push(black);
-      }
-    };
+  visitKing(piece: PieceComponent) {
+    this.setPiece(piece, "♔ ", "♚ ");
+  }
 
-    switch (piece.type) {
-      case PieceType.King:
-        return set("♔ ", "♚ ");
-      case PieceType.Queen:
-        return set("♕ ", "♛ ");
-      case PieceType.Bishop:
-        return set("♗ ", "♝ ");
-      case PieceType.Knight:
-        return set("♘ ", "♞ ");
-      case PieceType.Rook:
-        return set("♖ ", "♜ ");
-      case PieceType.Pawn:
-        return set("♙ ", "♟ ");
-      default:
-        assertUnreachable(piece.type);
+  visitQueen(piece: PieceComponent) {
+    this.setPiece(piece, "♕ ", "♛ ");
+  }
+
+  visitBishop(piece: PieceComponent) {
+    this.setPiece(piece, "♗ ", "♝ ");
+  }
+
+  visitKnight(piece: PieceComponent) {
+    this.setPiece(piece, "♘ ", "♞ ");
+  }
+
+  visitRook(piece: PieceComponent) {
+    this.setPiece(piece, "♖ ", "♜ ");
+  }
+
+  visitPawn(piece: PieceComponent) {
+    this.setPiece(piece, "♙ ", "♟ ");
+  }
+
+  private setPiece(piece: PieceComponent, white: string, black: string) {
+    if (!piece.position.null) {
+      this.board[piece.position.rankIndex][piece.position.fileIndex] =
+        piece.color === Color.White ? white : black;
+    } else if (piece.color === Color.White) {
+      this.whiteTaken.push(white);
+    } else {
+      this.blackTaken.push(black);
     }
   }
 
@@ -80,8 +85,4 @@ export class Printer implements Visitor {
 
   static fileLabels = indexes.map((i) => new Position(i, 0).fileName).join(" ");
   static rankLabels = indexes.map((i) => new Position(0, i).rankName);
-}
-
-function assertUnreachable(x: never): never {
-  throw new Error("Didn't expect to get here");
 }

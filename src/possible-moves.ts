@@ -29,11 +29,23 @@ export abstract class PossibleMoves implements Visitor {
 
   visitSide(side: SideComponent) {
     for (const piece of side.pieces) {
-      piece.accept(this);
+      if (!piece.position.null) {
+        piece.accept(this);
+      }
     }
   }
 
-  visitPiece(piece: PieceComponent) {}
+  visitKing(piece: PieceComponent) {}
+
+  visitQueen(piece: PieceComponent) {}
+
+  visitBishop(piece: PieceComponent) {}
+
+  visitKnight(piece: PieceComponent) {}
+
+  visitRook(piece: PieceComponent) {}
+
+  visitPawn(piece: PieceComponent) {}
 
   protected pieceAtPosition(position: Position) {
     return this.pieces.find((piece) => piece.position.equals(position));

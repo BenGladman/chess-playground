@@ -1,4 +1,4 @@
-import { Move } from "./move";
+import type { Move } from "./move";
 import type { Position } from "./position";
 
 export enum Color {
@@ -39,7 +39,12 @@ export interface BoardComponent extends Component {
 }
 
 export interface Visitor {
-  visitPiece(piece: PieceComponent): void;
+  visitKing(piece: PieceComponent): void;
+  visitQueen(piece: PieceComponent): void;
+  visitBishop(piece: PieceComponent): void;
+  visitKnight(piece: PieceComponent): void;
+  visitRook(piece: PieceComponent): void;
+  visitPawn(piece: PieceComponent): void;
   visitSide(side: SideComponent): void;
   visitBoard(board: BoardComponent): void;
 }
