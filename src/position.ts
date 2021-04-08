@@ -9,69 +9,88 @@ function isPositionIndex(index: number | null): index is PositionIndex {
 export class Position {
   readonly fileIndex: PositionIndex;
   readonly rankIndex: PositionIndex;
-  readonly null: boolean;
+  readonly isNull: boolean;
 
-  constructor(fileIndex: number | null, rankIndex: number | null) {
-    if (isPositionIndex(fileIndex) && isPositionIndex(rankIndex)) {
-      this.fileIndex = fileIndex;
-      this.rankIndex = rankIndex;
-      this.null = false;
-    } else {
+  private constructor(
+    fileIndex: PositionIndex | null,
+    rankIndex: PositionIndex | null
+  ) {
+    if (fileIndex === null || rankIndex === null) {
       this.fileIndex = 0;
       this.rankIndex = 0;
-      this.null = true;
+      this.isNull = true;
+    } else {
+      this.fileIndex = fileIndex;
+      this.rankIndex = rankIndex;
+      this.isNull = false;
     }
   }
 
   add(addFile: number, addRank: number) {
-    if (this.null) {
+    if (this.isNull) {
       return this;
     }
-    return new Position(this.fileIndex + addFile, this.rankIndex + addRank);
+    return Position.get(this.fileIndex + addFile, this.rankIndex + addRank);
   }
 
   atFile(fileIndex: number) {
-    if (this.null) {
+    if (this.isNull) {
       return this;
     }
-    return new Position(fileIndex, this.rankIndex);
+    return Position.get(fileIndex, this.rankIndex);
   }
 
   atRank(rankIndex: number) {
-    if (this.null) {
+    if (this.isNull) {
       return this;
     }
-    return new Position(this.fileIndex, rankIndex);
+    return Position.get(this.fileIndex, rankIndex);
   }
 
   equals(other: Position) {
     return (
-      (this.null && other.null) ||
-      (!this.null &&
-        !other.null &&
+      (this.isNull && other.isNull) ||
+      (!this.isNull &&
+        !other.isNull &&
         this.fileIndex === other.fileIndex &&
         this.rankIndex === other.rankIndex)
     );
   }
 
   toString() {
-    if (this.null) {
+    if (this.isNull) {
       return "null";
     }
     return `${this.fileName}${this.rankName}`;
   }
 
   get fileName() {
-    return this.null
+    return this.isNull
       ? "null"
       : String.fromCodePoint(CODEPOINT_a + this.fileIndex);
   }
 
   get rankName() {
-    return this.null
+    return this.isNull
       ? "null"
       : String.fromCodePoint(CODEPOINT_1 + this.rankIndex);
   }
 
   static NULL = new Position(null, null);
+
+  private static cache: Array<Position | undefined> = [];
+
+  static get(fileIndex: number, rankIndex: number): Position {
+    if (isPositionIndex(fileIndex) && isPositionIndex(rankIndex)) {
+      const cacheKey = rankIndex * 8 + fileIndex;
+      const cached = Position.cache[cacheKey];
+      if (cached) {
+        return cached;
+      }
+      const position = new Position(fileIndex, rankIndex);
+      Position.cache[cacheKey] = position;
+      return position;
+    }
+    return Position.NULL;
+  }
 }

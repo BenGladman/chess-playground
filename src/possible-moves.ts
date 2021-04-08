@@ -21,7 +21,7 @@ export abstract class PossibleMoves implements Visitor {
 
   visitBoard(board: BoardComponent) {
     this.pieces = [...board.black.pieces, ...board.white.pieces].filter(
-      (piece) => !piece.position.null
+      (piece) => !piece.position.isNull
     );
     const sideToPlay = board.turn === Color.White ? board.white : board.black;
     sideToPlay.accept(this);
@@ -29,7 +29,7 @@ export abstract class PossibleMoves implements Visitor {
 
   visitSide(side: SideComponent) {
     for (const piece of side.pieces) {
-      if (!piece.position.null) {
+      if (!piece.position.isNull) {
         piece.accept(this);
       }
     }
@@ -52,7 +52,7 @@ export abstract class PossibleMoves implements Visitor {
   }
 
   protected createMove(piece: PieceComponent, newPosition: Position) {
-    if (newPosition.null) {
+    if (newPosition.isNull) {
       return null;
     }
     const capturePiece = this.pieceAtPosition(newPosition);

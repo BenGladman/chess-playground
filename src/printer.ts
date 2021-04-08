@@ -53,7 +53,7 @@ export class Printer implements Visitor {
   }
 
   private setPiece(piece: PieceComponent, white: string, black: string) {
-    if (!piece.position.null) {
+    if (!piece.position.isNull) {
       this.board[piece.position.rankIndex][piece.position.fileIndex] =
         piece.color === Color.White ? white : black;
     } else if (piece.color === Color.White) {
@@ -83,6 +83,6 @@ export class Printer implements Visitor {
       .join("\n");
   }
 
-  static fileLabels = indexes.map((i) => new Position(i, 0).fileName).join(" ");
-  static rankLabels = indexes.map((i) => new Position(0, i).rankName);
+  static fileLabels = indexes.map((i) => Position.get(i, 0).fileName).join(" ");
+  static rankLabels = indexes.map((i) => Position.get(0, i).rankName);
 }

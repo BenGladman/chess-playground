@@ -32,12 +32,12 @@ export class Piece implements PieceComponent {
     return `${this.color} ${this.type}`;
   }
 
-  static createPiece(
+  static create(
     color: Color,
     type: PieceType,
     fileIndex: PositionIndex,
     rankIndex: PositionIndex
   ) {
-    return new Piece(color, type, new Position(fileIndex, rankIndex));
+    return new Piece(color, type, Position.get(fileIndex, rankIndex));
   }
 }

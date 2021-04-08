@@ -39,15 +39,8 @@ export class BoardStatus {
     return !this.isCheck && this.possibleMoves.length === 0;
   }
 
-  private _isCheckMate?: boolean;
-
   get isCheckMate() {
-    if (this._isCheckMate === undefined) {
-      this._isCheckMate =
-        this.isCheck &&
-        this.possibleMoves.every((move) => this.isCheckAfterMove(move));
-    }
-    return this._isCheckMate;
+    return this.isCheck && this.possibleMoves.length === 0;
   }
 
   protected isCheckAfterMove(move: Move | null) {

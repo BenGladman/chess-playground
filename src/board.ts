@@ -9,8 +9,8 @@ export class Board implements BoardComponent {
   moves: readonly Move[];
 
   constructor(
-    white = Side.createSide(Color.White),
-    black = Side.createSide(Color.Black),
+    white = Side.create(Color.White),
+    black = Side.create(Color.Black),
     turn = Color.White,
     moves: readonly Move[] = []
   ) {

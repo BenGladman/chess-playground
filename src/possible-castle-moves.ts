@@ -6,11 +6,15 @@ export class PossibleCastleMoves extends PossibleMoves {
   visitSide(side: SideComponent) {
     const king = side.pieces.find(
       (piece) =>
-        !piece.position.null && piece.type === PieceType.King && !piece.hasMoved
+        !piece.position.isNull &&
+        piece.type === PieceType.King &&
+        !piece.hasMoved
     );
     const rooks = side.pieces.filter(
       (piece) =>
-        !piece.position.null && piece.type === PieceType.Rook && !piece.hasMoved
+        !piece.position.isNull &&
+        piece.type === PieceType.Rook &&
+        !piece.hasMoved
     );
     if (!king || rooks.length === 0) {
       return;
