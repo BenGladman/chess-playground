@@ -33,7 +33,7 @@ class Game {
     } while (
       !this.boardStatus.isStaleMate &&
       !this.boardStatus.isCheckMate &&
-      this.board.moves.length < 100
+      this.board.moves.length < 300
     );
   }
 }

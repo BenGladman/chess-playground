@@ -1,4 +1,4 @@
-import { Position } from "./position";
+import { Position, PositionIndex } from "./position";
 import { Color, PieceComponent, PieceType, Visitor } from "./types";
 
 export class Piece implements PieceComponent {
@@ -7,7 +7,7 @@ export class Piece implements PieceComponent {
   readonly position: Position;
   readonly hasMoved: boolean;
 
-  constructor(
+  private constructor(
     color: Color,
     type: PieceType,
     position: Position,
@@ -30,5 +30,14 @@ export class Piece implements PieceComponent {
 
   toString() {
     return `${this.color} ${this.type}`;
+  }
+
+  static createPiece(
+    color: Color,
+    type: PieceType,
+    fileIndex: PositionIndex,
+    rankIndex: PositionIndex
+  ) {
+    return new Piece(color, type, new Position(fileIndex, rankIndex));
   }
 }

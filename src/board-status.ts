@@ -6,35 +6,24 @@ import { PossiblePawnMoves } from "./possible-pawn-moves";
 
 export class BoardStatus {
   readonly board: Board;
-  readonly possibleMoves: readonly Move[];
-  readonly possibleKingCaptureMoves: readonly Move[];
+  readonly possibleMoves: Move[] = [];
+  readonly possibleKingCaptureMoves: Move[] = [];
 
-  constructor(board: Board, disableIsCheckAfterMove = false) {
+  constructor(board: Board) {
     this.board = board;
-    if (disableIsCheckAfterMove) {
-      this.isCheckAfterMove = () => false;
+
+    for (const PossibleMoves of [
+      PossibleMainMoves,
+      PossiblePawnMoves,
+      PossibleCastleMoves,
+    ]) {
+      const possibles = new PossibleMoves((move) =>
+        this.isCheckAfterMove(move)
+      );
+      board.accept(possibles);
+      this.possibleMoves.push(...possibles.moves);
+      this.possibleKingCaptureMoves.push(...possibles.kingCaptureMoves);
     }
-
-    const isCheckAfterMove = this.isCheckAfterMove.bind(this);
-
-    const possibles = new PossibleMainMoves(isCheckAfterMove);
-    board.accept(possibles);
-
-    const pawnPossibles = new PossiblePawnMoves(isCheckAfterMove);
-    board.accept(pawnPossibles);
-
-    const castlePossibles = new PossibleCastleMoves(isCheckAfterMove);
-    board.accept(castlePossibles);
-
-    this.possibleMoves = [
-      ...possibles.moves,
-      ...pawnPossibles.moves,
-      ...castlePossibles.moves,
-    ];
-    this.possibleKingCaptureMoves = [
-      ...possibles.kingCaptureMoves,
-      ...pawnPossibles.kingCaptureMoves,
-    ];
   }
 
   private _isCheck?: boolean;
@@ -61,9 +50,9 @@ export class BoardStatus {
     return this._isCheckMate;
   }
 
-  private isCheckAfterMove(move: Move | null) {
+  protected isCheckAfterMove(move: Move | null) {
     const isCheck =
-      new BoardStatus(this.board.play(move), true).possibleKingCaptureMoves
+      new BoardStatusRecursive(this.board.play(move)).possibleKingCaptureMoves
         .length > 0;
     return isCheck;
   }
@@ -77,5 +66,11 @@ export class BoardStatus {
       : this.isStaleMate
       ? "STALEMATE"
       : movesString;
+  }
+}
+
+class BoardStatusRecursive extends BoardStatus {
+  protected isCheckAfterMove(move: Move | null) {
+    return false;
   }
 }

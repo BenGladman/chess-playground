@@ -9,10 +9,10 @@ export class Board implements BoardComponent {
   moves: readonly Move[];
 
   constructor(
-    white = new Side(Color.White),
-    black = new Side(Color.Black),
+    white = Side.createSide(Color.White),
+    black = Side.createSide(Color.Black),
     turn = Color.White,
-    moves = [] as readonly Move[]
+    moves: readonly Move[] = []
   ) {
     this.white = white;
     this.black = black;
