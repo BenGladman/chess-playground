@@ -1,13 +1,15 @@
 import {
   Color,
+  Move,
   PieceComponent,
   PieceType,
+  Playable,
   Position,
   PositionIndex,
   Visitor,
 } from "./core";
 
-export class Piece implements PieceComponent {
+export class Piece implements PieceComponent, Playable<Piece> {
   readonly color: Color;
   readonly type: PieceType;
   readonly position: Position;
@@ -27,6 +29,18 @@ export class Piece implements PieceComponent {
 
   with(newPosition: Position, newType?: PieceType) {
     return new Piece(this.color, newType ?? this.type, newPosition, true);
+  }
+
+  play(move: Move): Piece {
+    if (move.piece === this) {
+      return this.with(move.to, move.promote);
+    } else if (move.capturePiece === this) {
+      return this.with(Position.NULL);
+    } else if (move.castle === this && move.castleTo) {
+      return this.with(move.castleTo);
+    } else {
+      return this;
+    }
   }
 
   accept(visitor: Visitor) {

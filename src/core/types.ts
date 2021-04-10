@@ -15,28 +15,31 @@ export enum PieceType {
   "Pawn" = "Pawn",
 }
 
-interface Component {
+export interface Visitable {
   accept(visitor: Visitor): void;
 }
 
-export interface PieceComponent extends Component {
+export interface PieceComponent extends Visitable {
   readonly color: Color;
   readonly type: PieceType;
   readonly position: Position;
   readonly hasMoved: boolean;
 }
 
-export interface SideComponent extends Component {
+export interface SideComponent extends Visitable {
   readonly color: Color;
   readonly pieces: readonly PieceComponent[];
 }
 
-export interface BoardComponent extends Component {
+export interface BoardComponent extends Visitable {
   readonly black: SideComponent;
   readonly white: SideComponent;
   readonly turn: Color;
   readonly lastMove: Move | null;
-  play(move: Move | null): BoardComponent;
+}
+
+export interface Playable<T> {
+  play(this: T, move: Move | null): T;
 }
 
 export interface Visitor {

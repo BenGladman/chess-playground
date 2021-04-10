@@ -2,13 +2,13 @@ import {
   Color,
   Move,
   PieceType,
-  Position,
+  Playable,
   SideComponent,
   Visitor,
 } from "./core";
 import { Piece } from "./piece";
 
-export class Side implements SideComponent {
+export class Side implements SideComponent, Playable<Side> {
   readonly color: Color;
   readonly pieces: readonly Piece[];
 
@@ -20,17 +20,7 @@ export class Side implements SideComponent {
   play(move: Move): Side {
     return new Side(
       this.color,
-      this.pieces.map((piece) => {
-        if (move.piece === piece) {
-          return piece.with(move.to, move.promote);
-        } else if (move.capturePiece === piece) {
-          return piece.with(Position.NULL);
-        } else if (move.castle === piece && move.castleTo) {
-          return piece.with(move.castleTo);
-        } else {
-          return piece;
-        }
-      })
+      this.pieces.map((piece) => piece.play(move))
     );
   }
 

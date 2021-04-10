@@ -1,28 +1,35 @@
 import { Board } from "./board";
+import { Printer } from "./core";
 
 class Game {
-  board = new Board();
+  board = Board.create();
 
   play() {
-    const possibleMoves = this.board.status.possibleMoves;
+    const possibleMoves = this.board.possibleMoves;
     const randomMove =
       possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
     this.board = this.board.play(randomMove);
   }
 
+  print() {
+    const printer = new Printer();
+    this.board.accept(printer);
+    console.log(printer.toString());
+  }
+
   run() {
-    this.board.print();
+    this.print();
 
     do {
       console.log("\n");
       this.play();
       console.log(
-        `Random move #${this.board.moves.length} ${this.board.lastMove} ${this.board.status}`
+        `Random move #${this.board.moves.length} ${this.board.lastMove} ${this.board}`
       );
-      this.board.print();
+      this.print();
     } while (
-      !this.board.status.isStaleMate &&
-      !this.board.status.isCheckMate &&
+      !this.board.isStaleMate &&
+      !this.board.isCheckMate &&
       this.board.moves.length < 300
     );
   }
