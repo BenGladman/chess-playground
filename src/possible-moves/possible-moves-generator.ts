@@ -1,9 +1,9 @@
-import { BoardComponent, Move } from "../core";
+import { Move, Visitable } from "../core";
 import { PossibleCastleMoves } from "./possible-castle-moves";
 import { PossibleMainMoves } from "./possible-main-moves";
 import { PossiblePawnMoves } from "./possible-pawn-moves";
 
-interface PossibleMovesBoard extends BoardComponent {
+interface PossibleMovesBoard extends Visitable {
   isCheckAfterMove(move: Move): boolean;
 }
 

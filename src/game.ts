@@ -1,14 +1,32 @@
 import { Board } from "./board";
-import { Printer } from "./core";
+import { Color, Printer } from "./core";
+import {
+  CaptureStrategy,
+  CheckStrategy,
+  PlayStrategy,
+  RandomStrategy,
+} from "./play-strategies";
+
+function createStrategy() {
+  const strategies = [CaptureStrategy, CheckStrategy, RandomStrategy];
+  const Strategy = strategies[Math.floor(Math.random() * strategies.length)];
+  return new Strategy();
+}
+
+async function pause(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 class Game {
   board = Board.create();
+  whiteStrategy = createStrategy();
+  blackStrategy = createStrategy();
 
-  play() {
-    const possibleMoves = this.board.possibleMoves;
-    const randomMove =
-      possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-    this.board = this.board.play(randomMove);
+  play(strategy: PlayStrategy) {
+    this.board = strategy.play(this.board);
+    console.log(
+      `${strategy.name} move #${this.board.moves.length} ${this.board.lastMove} ${this.board}`
+    );
   }
 
   print() {
@@ -17,14 +35,18 @@ class Game {
     console.log(printer.toString());
   }
 
-  run() {
+  async run() {
+    console.clear();
+    console.log("Initial board");
     this.print();
 
     do {
-      console.log("\n");
-      this.play();
-      console.log(
-        `Random move #${this.board.moves.length} ${this.board.lastMove} ${this.board}`
+      await pause(250);
+      console.clear();
+      this.play(
+        this.board.sideToPlay.color === Color.White
+          ? this.whiteStrategy
+          : this.blackStrategy
       );
       this.print();
     } while (
