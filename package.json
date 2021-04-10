@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/game.ts"
+    "start": "ts-node ./src/game.ts",
+    "typecheck": "tsc --noEmit"
   },
   "author": "",
   "license": "ISC",

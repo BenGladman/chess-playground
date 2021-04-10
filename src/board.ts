@@ -10,10 +10,10 @@ import { PossibleMovesGenerator } from "./possible-moves";
 import { Side } from "./side";
 
 export class Board implements BoardComponent, Playable<Board> {
-  sideToPlay: Side;
-  otherSide: Side;
-  moves: readonly Move[];
-  possibleMovesGenerator: PossibleMovesGenerator;
+  readonly sideToPlay: Side;
+  readonly otherSide: Side;
+  readonly moves: readonly Move[];
+  readonly possibleMovesGenerator: PossibleMovesGenerator;
 
   protected constructor(
     sideToPlay = Side.create(Color.White),
