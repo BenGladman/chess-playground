@@ -32,9 +32,8 @@ export interface SideComponent extends Visitable {
 }
 
 export interface BoardComponent extends Visitable {
-  readonly black: SideComponent;
-  readonly white: SideComponent;
-  readonly turn: Color;
+  readonly sideToPlay: SideComponent;
+  readonly otherSide: SideComponent;
   readonly lastMove: Move | null;
 }
 

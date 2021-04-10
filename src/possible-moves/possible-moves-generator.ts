@@ -14,18 +14,12 @@ export class PossibleMovesGenerator {
     PossibleCastleMoves,
   ];
 
-  private board: PossibleMovesBoard;
-
-  constructor(board: PossibleMovesBoard) {
-    this.board = board;
-  }
-
-  generate(): readonly Move[] {
+  generate(board: PossibleMovesBoard): readonly Move[] {
     const possibleMoves: Move[] = [];
 
     for (const Visitor of this.Visitors) {
-      const visitor = new Visitor((move) => this.board.isCheckAfterMove(move));
-      this.board.accept(visitor);
+      const visitor = new Visitor((move) => board.isCheckAfterMove(move));
+      board.accept(visitor);
       possibleMoves.push(...visitor.moves);
     }
 

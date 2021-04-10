@@ -18,11 +18,11 @@ export abstract class PossibleMoves implements Visitor {
   }
 
   visitBoard(board: BoardComponent) {
-    this.pieces = [...board.black.pieces, ...board.white.pieces].filter(
-      (piece) => !piece.position.isNull
-    );
-    const sideToPlay = board.turn === Color.White ? board.white : board.black;
-    sideToPlay.accept(this);
+    this.pieces = [
+      ...board.sideToPlay.pieces,
+      ...board.otherSide.pieces,
+    ].filter((piece) => !piece.position.isNull);
+    board.sideToPlay.accept(this);
   }
 
   visitSide(side: SideComponent) {

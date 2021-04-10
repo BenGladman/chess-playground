@@ -17,8 +17,8 @@ export class Printer implements Visitor {
   private blackCaptured: string[] = [];
 
   visitBoard(board: BoardComponent) {
-    board.white.accept(this);
-    board.black.accept(this);
+    board.sideToPlay.accept(this);
+    board.otherSide.accept(this);
   }
 
   visitSide(side: SideComponent) {

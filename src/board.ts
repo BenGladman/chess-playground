@@ -10,37 +10,33 @@ import { PossibleMovesGenerator } from "./possible-moves";
 import { Side } from "./side";
 
 export class Board implements BoardComponent, Playable<Board> {
-  white: Side;
-  black: Side;
-  turn: Color;
+  sideToPlay: Side;
+  otherSide: Side;
   moves: readonly Move[];
+  possibleMovesGenerator: PossibleMovesGenerator;
 
   protected constructor(
-    white = Side.create(Color.White),
-    black = Side.create(Color.Black),
-    turn = Color.White,
-    moves: readonly Move[] = []
+    sideToPlay = Side.create(Color.White),
+    otherSide = Side.create(Color.Black),
+    moves: readonly Move[] = [],
+    possibleMovesGenerator = new PossibleMovesGenerator()
   ) {
-    this.white = white;
-    this.black = black;
-    this.turn = turn;
+    this.sideToPlay = sideToPlay;
+    this.otherSide = otherSide;
     this.moves = moves;
+    this.possibleMovesGenerator = possibleMovesGenerator;
   }
 
   get lastMove() {
     return this.moves.length > 0 ? this.moves[this.moves.length - 1] : null;
   }
 
-  get nextTurn() {
-    return this.turn === Color.White ? Color.Black : Color.White;
-  }
-
   play(move: Move) {
     return new Board(
-      this.white.play(move),
-      this.black.play(move),
-      this.nextTurn,
-      this.moves.concat(move)
+      this.otherSide.play(move),
+      this.sideToPlay.play(move),
+      this.moves.concat(move),
+      this.possibleMovesGenerator
     );
   }
 
@@ -52,7 +48,7 @@ export class Board implements BoardComponent, Playable<Board> {
 
   get possibleMoves(): readonly Move[] {
     if (this._possibleMoves === undefined) {
-      this._possibleMoves = new PossibleMovesGenerator(this).generate();
+      this._possibleMoves = this.possibleMovesGenerator.generate(this);
     }
     return this._possibleMoves;
   }
@@ -88,9 +84,10 @@ export class Board implements BoardComponent, Playable<Board> {
 
   isCheckAfterMove(move: Move | null) {
     return new BoardRecursive(
-      move ? this.white.play(move) : this.white,
-      move ? this.black.play(move) : this.black,
-      this.nextTurn
+      move ? this.otherSide.play(move) : this.otherSide,
+      move ? this.sideToPlay.play(move) : this.sideToPlay,
+      undefined,
+      this.possibleMovesGenerator
     ).isCheckOtherSide;
   }
 
