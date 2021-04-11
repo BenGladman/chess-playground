@@ -91,15 +91,16 @@ export class Board implements BoardComponent, Playable<Board> {
     ).isCheckOtherSide;
   }
 
-  toString() {
+  get statusDescription(): string {
+    const toPlayString = `${this.sideToPlay.color} to play`;
     const movesString = `${this.possibleMoves.length} possible moves`;
     return this.isCheckMate
-      ? "CHECKMATE"
+      ? `CHECKMATE ${this.otherSide.color} wins`
       : this.isCheck
-      ? `CHECK (${movesString})`
+      ? `${toPlayString}, ${movesString} CHECK`
       : this.isStaleMate
-      ? "STALEMATE"
-      : movesString;
+      ? `${toPlayString} STALEMATE`
+      : `${toPlayString}, ${movesString}`;
   }
 
   static create() {

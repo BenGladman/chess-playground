@@ -3,12 +3,11 @@ import { Color, Printer } from "./core";
 import {
   CaptureStrategy,
   CheckStrategy,
-  PlayStrategy,
   RandomStrategy,
 } from "./play-strategies";
 
 function createStrategy() {
-  const strategies = [CaptureStrategy, CheckStrategy, RandomStrategy];
+  const strategies = [CaptureStrategy, CheckStrategy, RandomStrategy] as const;
   const Strategy = strategies[Math.floor(Math.random() * strategies.length)];
   return new Strategy();
 }
@@ -22,33 +21,44 @@ class Game {
   whiteStrategy = createStrategy();
   blackStrategy = createStrategy();
 
-  play(strategy: PlayStrategy) {
-    this.board = strategy.play(this.board);
+  print(head1 = "", head2 = "") {
+    const HOME = "\x1b[1;1H";
+    const ERASE_TO_END = "\x1b[K";
+    const NL = "\n";
+
+    const printer = new Printer();
+    this.board.accept(printer);
+
     console.log(
-      `${strategy.name} move #${this.board.moves.length} ${this.board.lastMove} ${this.board}`
+      [
+        HOME,
+        head1,
+        ERASE_TO_END,
+        NL,
+        head2,
+        ERASE_TO_END,
+        NL,
+        NL,
+        printer,
+        NL,
+      ].join("")
     );
   }
 
-  print() {
-    const printer = new Printer();
-    this.board.accept(printer);
-    console.log(printer.toString());
-  }
-
   async run() {
-    console.clear();
-    console.log("Initial board");
-    this.print();
+    this.print("Initial board");
 
     do {
       await pause(250);
-      console.clear();
-      this.play(
+      const strategy =
         this.board.sideToPlay.color === Color.White
           ? this.whiteStrategy
-          : this.blackStrategy
+          : this.blackStrategy;
+      this.board = strategy.play(this.board);
+      this.print(
+        `${strategy.name} move #${this.board.moves.length} ${this.board.lastMove}`,
+        this.board.statusDescription
       );
-      this.print();
     } while (
       !this.board.isStaleMate &&
       !this.board.isCheckMate &&
@@ -57,5 +67,10 @@ class Game {
   }
 }
 
+process.on("SIGINT", () => {
+  process.exit();
+});
+
 const game = new Game();
+console.clear();
 game.run();
