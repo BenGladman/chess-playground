@@ -1,20 +1,25 @@
 import {
   BoardComponent,
-  Color,
   Move,
   PieceComponent,
   Position,
   SideComponent,
   Visitor,
 } from "../core";
+import { MovesGenerator, ValidMovesBoard } from "./types";
 
-export abstract class ValidMovesVisitor implements Visitor {
+export abstract class ValidMovesVisitor implements Visitor, MovesGenerator {
+  private board: ValidMovesBoard;
   private _moves: Move[] = [];
   private pieces: readonly PieceComponent[] = [];
-  protected isCheckAfterMove: (move: Move) => boolean;
 
-  constructor(isCheckAfterMove: (move: Move) => boolean) {
-    this.isCheckAfterMove = isCheckAfterMove;
+  constructor(board: ValidMovesBoard) {
+    this.board = board;
+  }
+
+  generate(): readonly Move[] {
+    this.board.accept(this);
+    return this._moves;
   }
 
   visitBoard(board: BoardComponent) {
@@ -49,7 +54,10 @@ export abstract class ValidMovesVisitor implements Visitor {
     return this.pieces.find((piece) => piece.position === position);
   }
 
-  protected createMove(piece: PieceComponent, newPosition: Position) {
+  protected createMove(
+    piece: PieceComponent,
+    newPosition: Position
+  ): Move | null {
     if (newPosition.isNull) {
       return null;
     }
@@ -59,6 +67,10 @@ export abstract class ValidMovesVisitor implements Visitor {
     }
     const move = new Move(piece, newPosition, capturePiece);
     return move;
+  }
+
+  protected isCheckAfterMove(move: Move): boolean {
+    return this.board.isCheckAfterMove(move);
   }
 
   protected possiblyAddMove(move: Move) {

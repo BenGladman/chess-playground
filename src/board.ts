@@ -15,18 +15,15 @@ export class Board
   readonly sideToPlay: Side;
   readonly otherSide: Side;
   readonly moves: readonly Move[];
-  readonly validMovesGenerator: ValidMovesGenerator;
 
   protected constructor(
     sideToPlay = Side.create(Color.White),
     otherSide = Side.create(Color.Black),
-    moves: readonly Move[] = [],
-    validMovesGenerator = new ValidMovesGenerator()
+    moves: readonly Move[] = []
   ) {
     this.sideToPlay = sideToPlay;
     this.otherSide = otherSide;
     this.moves = moves;
-    this.validMovesGenerator = validMovesGenerator;
   }
 
   get lastMove() {
@@ -37,8 +34,7 @@ export class Board
     return new Board(
       this.otherSide.play(move),
       this.sideToPlay.play(move),
-      this.moves.concat(move),
-      this.validMovesGenerator
+      this.moves.concat(move)
     ) as this;
   }
 
@@ -50,7 +46,7 @@ export class Board
 
   get validMoves(): readonly Move[] {
     if (this._validMoves === undefined) {
-      this._validMoves = this.validMovesGenerator.generate(this);
+      this._validMoves = new ValidMovesGenerator(this).generate();
     }
     return this._validMoves;
   }
@@ -87,9 +83,7 @@ export class Board
   isCheckAfterMove(move: Move | null) {
     return new BoardRecursive(
       move ? this.otherSide.play(move) : this.otherSide,
-      move ? this.sideToPlay.play(move) : this.sideToPlay,
-      undefined,
-      this.validMovesGenerator
+      move ? this.sideToPlay.play(move) : this.sideToPlay
     ).isCheckOtherSide;
   }
 

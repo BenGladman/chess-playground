@@ -2,23 +2,20 @@ import { Move, Visitable } from "../core";
 import { Castling } from "./castling";
 import { MainMoves } from "./main-moves";
 import { PawnMoves } from "./pawn-moves";
+import { ValidMovesBoard, MovesGenerator } from "./types";
 
-export interface ValidMovesBoard extends Visitable {
-  isCheckAfterMove(move: Move): boolean;
-}
+export class ValidMovesGenerator implements MovesGenerator {
+  private readonly generators: readonly MovesGenerator[];
 
-export class ValidMovesGenerator {
-  private readonly Visitors = [MainMoves, PawnMoves, Castling];
+  constructor(board: ValidMovesBoard) {
+    this.generators = [
+      new MainMoves(board),
+      new PawnMoves(board),
+      new Castling(board),
+    ];
+  }
 
-  generate(board: ValidMovesBoard): readonly Move[] {
-    const validMoves: Move[] = [];
-
-    for (const Visitor of this.Visitors) {
-      const visitor = new Visitor((move) => board.isCheckAfterMove(move));
-      board.accept(visitor);
-      validMoves.push(...visitor.moves);
-    }
-
-    return validMoves;
+  generate(): readonly Move[] {
+    return this.generators.flatMap((generator) => generator.generate());
   }
 }

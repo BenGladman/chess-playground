@@ -13,6 +13,6 @@ export class CheckStrategy implements PlayStrategy {
       .map((move) => board.play(move))
       .sort(boardComparitor);
 
-    return nextBoards[Math.floor(Math.random() * nextBoards.length)];
+    return nextBoards[0];
   };
 }
