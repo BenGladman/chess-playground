@@ -1,18 +1,12 @@
-import { PlayHandler, PlayStrategy, StrategyBoard } from "./types";
+import { Move } from "../core";
+import { AbstractPlayStrategy } from "./abstract-play-strategy";
+import { StrategyBoard } from "./types";
 
-function boardComparitor(a: StrategyBoard, b: StrategyBoard) {
-  const result = (a.isCheck ? 1 : 2) - (b.isCheck ? 1 : 2);
-  return result || Math.random() - 0.5;
-}
-
-export class CheckStrategy implements PlayStrategy {
+export class CheckStrategy extends AbstractPlayStrategy {
   name = "CheckStrategy";
 
-  play: PlayHandler = (board) => {
-    const nextBoards = board.validMoves
-      .map((move) => board.play(move))
-      .sort(boardComparitor);
-
-    return nextBoards[0];
-  };
+  protected calculateScore(move: Move, board: StrategyBoard) {
+    const nextBoard = board.play(move);
+    return (nextBoard.isCheck ? 2 : 1) + Math.random();
+  }
 }

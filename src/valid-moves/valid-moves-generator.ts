@@ -1,11 +1,12 @@
-import { Move, Visitable } from "../core";
+import { Move } from "../core";
 import { Castling } from "./castling";
 import { MainMoves } from "./main-moves";
 import { PawnMoves } from "./pawn-moves";
-import { ValidMovesBoard, MovesGenerator } from "./types";
+import { ValidMovesBoard } from "./types";
+import { AbstractMovesGenerator } from "./abstract-moves-generator";
 
-export class ValidMovesGenerator implements MovesGenerator {
-  private readonly generators: readonly MovesGenerator[];
+export class ValidMovesGenerator {
+  private readonly generators: readonly AbstractMovesGenerator[];
 
   constructor(board: ValidMovesBoard) {
     this.generators = [

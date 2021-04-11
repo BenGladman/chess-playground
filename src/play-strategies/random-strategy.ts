@@ -1,12 +1,9 @@
-import { PlayHandler, PlayStrategy } from "./types";
+import { AbstractPlayStrategy } from "./abstract-play-strategy";
 
-export class RandomStrategy implements PlayStrategy {
+export class RandomStrategy extends AbstractPlayStrategy {
   name = "RandomStrategy";
 
-  play: PlayHandler = (board) => {
-    const validMoves = board.validMoves;
-    const randomMove =
-      validMoves[Math.floor(Math.random() * validMoves.length)];
-    return board.play(randomMove);
-  };
+  protected calculateScore() {
+    return Math.random();
+  }
 }

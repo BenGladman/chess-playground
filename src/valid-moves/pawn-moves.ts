@@ -7,9 +7,9 @@ import {
   Position,
   SideComponent,
 } from "../core";
-import { ValidMovesVisitor } from "./valid-moves-visitor";
+import { AbstractMovesGenerator } from "./abstract-moves-generator";
 
-export class PawnMoves extends ValidMovesVisitor {
+export class PawnMoves extends AbstractMovesGenerator {
   private lastMove: Move | null = null;
   private enPassantPiece?: PieceComponent;
   private enPassantPosition?: Position;

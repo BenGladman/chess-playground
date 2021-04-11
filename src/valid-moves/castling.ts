@@ -1,7 +1,7 @@
 import { Move, PieceComponent, PieceType, SideComponent } from "../core";
-import { ValidMovesVisitor } from "./valid-moves-visitor";
+import { AbstractMovesGenerator } from "./abstract-moves-generator";
 
-export class Castling extends ValidMovesVisitor {
+export class Castling extends AbstractMovesGenerator {
   visitSide(side: SideComponent) {
     const king = side.pieces.find(
       (piece) =>

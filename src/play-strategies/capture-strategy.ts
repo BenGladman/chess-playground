@@ -1,28 +1,21 @@
 import { Move, PieceType } from "../core";
-import { PlayHandler, PlayStrategy } from "./types";
+import { AbstractPlayStrategy } from "./abstract-play-strategy";
+import { StrategyBoard } from "./types";
 
 const orderedTypes = [
-  PieceType.King,
-  PieceType.Queen,
-  PieceType.Rook,
-  PieceType.Knight,
-  PieceType.Bishop,
-  PieceType.Pawn,
   undefined,
+  PieceType.Pawn,
+  PieceType.Bishop,
+  PieceType.Knight,
+  PieceType.Rook,
+  PieceType.Queen,
+  PieceType.King,
 ];
 
-function moveComparitor(a: Move, b: Move) {
-  const result =
-    orderedTypes.indexOf(a.capturePiece?.type) -
-    orderedTypes.indexOf(b.capturePiece?.type);
-  return result || Math.random() - 0.5;
-}
-
-export class CaptureStrategy implements PlayStrategy {
+export class CaptureStrategy extends AbstractPlayStrategy {
   name = "CaptureStrategy";
 
-  play: PlayHandler = (board) => {
-    const validMoves = [...board.validMoves].sort(moveComparitor);
-    return board.play(validMoves[0]);
-  };
+  protected calculateScore(move: Move) {
+    return orderedTypes.indexOf(move.capturePiece?.type) + Math.random();
+  }
 }

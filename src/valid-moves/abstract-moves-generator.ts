@@ -6,9 +6,9 @@ import {
   SideComponent,
   Visitor,
 } from "../core";
-import { MovesGenerator, ValidMovesBoard } from "./types";
+import { ValidMovesBoard } from "./types";
 
-export abstract class ValidMovesVisitor implements Visitor, MovesGenerator {
+export abstract class AbstractMovesGenerator implements Visitor {
   private board: ValidMovesBoard;
   private _moves: Move[] = [];
   private pieces: readonly PieceComponent[] = [];
