@@ -37,8 +37,8 @@ export interface BoardComponent extends Visitable {
   readonly lastMove: Move | null;
 }
 
-export interface Playable<T> {
-  play(this: T, move: Move | null): T;
+export interface Playable {
+  play(move: Move | null): this;
 }
 
 export interface Visitor {

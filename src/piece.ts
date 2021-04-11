@@ -9,7 +9,7 @@ import {
   Visitor,
 } from "./core";
 
-export class Piece implements PieceComponent, Playable<Piece> {
+export class Piece implements PieceComponent, Playable {
   readonly color: Color;
   readonly type: PieceType;
   readonly position: Position;
@@ -27,11 +27,16 @@ export class Piece implements PieceComponent, Playable<Piece> {
     this.hasMoved = hasMoved;
   }
 
-  with(newPosition: Position, newType?: PieceType) {
-    return new Piece(this.color, newType ?? this.type, newPosition, true);
+  with(newPosition: Position, newType?: PieceType): this {
+    return new Piece(
+      this.color,
+      newType ?? this.type,
+      newPosition,
+      true
+    ) as this;
   }
 
-  play(move: Move): Piece {
+  play(move: Move): this {
     if (move.piece === this) {
       return this.with(move.to, move.promoteTo);
     } else if (move.capturePiece === this) {

@@ -8,7 +8,7 @@ import {
 } from "./core";
 import { Piece } from "./piece";
 
-export class Side implements SideComponent, Playable<Side> {
+export class Side implements SideComponent, Playable {
   readonly color: Color;
   readonly pieces: readonly Piece[];
 
@@ -17,11 +17,11 @@ export class Side implements SideComponent, Playable<Side> {
     this.pieces = pieces;
   }
 
-  play(move: Move): Side {
+  play(move: Move): this {
     return new Side(
       this.color,
       this.pieces.map((piece) => piece.play(move))
-    );
+    ) as this;
   }
 
   accept(visitor: Visitor) {

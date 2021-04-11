@@ -1,11 +1,11 @@
 import { Move, Playable } from "../core";
 
-export interface StrategyBoard {
+export interface StrategyBoard extends Playable {
   readonly validMoves: readonly Move[];
   readonly isCheck: boolean;
 }
 
-export type PlayHandler = <Board extends StrategyBoard & Playable<Board>>(
+export type PlayHandler = <Board extends StrategyBoard>(
   board: Board
 ) => Board;
 

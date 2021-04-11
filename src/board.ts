@@ -11,7 +11,7 @@ import { Side } from "./side";
 import { ValidMovesBoard, ValidMovesGenerator } from "./valid-moves";
 
 export class Board
-  implements BoardComponent, Playable<Board>, ValidMovesBoard, StrategyBoard {
+  implements BoardComponent, Playable, ValidMovesBoard, StrategyBoard {
   readonly sideToPlay: Side;
   readonly otherSide: Side;
   readonly moves: readonly Move[];
@@ -33,13 +33,13 @@ export class Board
     return this.moves.length > 0 ? this.moves[this.moves.length - 1] : null;
   }
 
-  play(move: Move) {
+  play(move: Move): this {
     return new Board(
       this.otherSide.play(move),
       this.sideToPlay.play(move),
       this.moves.concat(move),
       this.validMovesGenerator
-    );
+    ) as this;
   }
 
   accept(visitor: Visitor) {
