@@ -33,7 +33,7 @@ export class Piece implements PieceComponent, Playable<Piece> {
 
   play(move: Move): Piece {
     if (move.piece === this) {
-      return this.with(move.to, move.promote);
+      return this.with(move.to, move.promoteTo);
     } else if (move.capturePiece === this) {
       return this.with(Position.NULL);
     } else if (move.castle === this && move.castleTo) {

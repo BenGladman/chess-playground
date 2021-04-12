@@ -5,7 +5,7 @@ export class Move {
   readonly piece: PieceComponent;
   readonly to: Position;
   readonly capturePiece?: PieceComponent;
-  readonly promote?: typeof Move.PROMOTE_TYPES[number];
+  readonly promoteTo?: typeof Move.PROMOTE_TO_TYPES[number];
   readonly castle?: PieceComponent;
   readonly castleTo?: Position;
 
@@ -13,14 +13,14 @@ export class Move {
     piece: PieceComponent,
     to: Position,
     capturePiece?: PieceComponent,
-    promote?: typeof Move.PROMOTE_TYPES[number],
+    promoteTo?: typeof Move.PROMOTE_TO_TYPES[number],
     castle?: PieceComponent,
     castleTo?: Position
   ) {
     this.piece = piece;
     this.to = to;
     this.capturePiece = capturePiece;
-    this.promote = promote;
+    this.promoteTo = promoteTo;
     this.castle = castle;
     this.castleTo = castleTo;
   }
@@ -30,7 +30,7 @@ export class Move {
       this.piece,
       this.piece.position,
       this.to,
-      this.promote && `(${this.promote})`,
+      this.promoteTo && `(${this.promoteTo})`,
       this.capturePiece && `x ${this.capturePiece}`,
       this.castle && "castle",
     ]
@@ -38,7 +38,7 @@ export class Move {
       .join(" ");
   }
 
-  static PROMOTE_TYPES = [
+  static PROMOTE_TO_TYPES = [
     PieceType.Queen,
     PieceType.Bishop,
     PieceType.Knight,

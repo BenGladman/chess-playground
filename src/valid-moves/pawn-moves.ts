@@ -75,12 +75,12 @@ export class PawnMoves extends ValidMovesVisitor {
     const promoteRank = move.piece.color === Color.White ? 7 : 0;
 
     if (move.to.rankIndex === promoteRank) {
-      for (const promote of Move.PROMOTE_TYPES) {
+      for (const promoteTo of Move.PROMOTE_TO_TYPES) {
         const promoteMove = new Move(
           move.piece,
           move.to,
           move.capturePiece,
-          promote
+          promoteTo
         );
         this.possiblyAddMove(promoteMove);
       }
