@@ -7,9 +7,9 @@ import {
   Position,
   SideComponent,
 } from "../core";
-import { PossibleMoves } from "./possible-moves";
+import { ValidMovesVisitor } from "./valid-moves-visitor";
 
-export class PossiblePawnMoves extends PossibleMoves {
+export class PawnMoves extends ValidMovesVisitor {
   private lastMove: Move | null = null;
   private enPassantPiece?: PieceComponent;
   private enPassantPosition?: Position;

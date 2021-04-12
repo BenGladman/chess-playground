@@ -1,7 +1,7 @@
 import { Move, PieceComponent, PieceType, SideComponent } from "../core";
-import { PossibleMoves } from "./possible-moves";
+import { ValidMovesVisitor } from "./valid-moves-visitor";
 
-export class PossibleCastleMoves extends PossibleMoves {
+export class Castling extends ValidMovesVisitor {
   visitSide(side: SideComponent) {
     const king = side.pieces.find(
       (piece) =>

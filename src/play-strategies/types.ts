@@ -1,7 +1,7 @@
 import { Move, Playable } from "../core";
 
 export interface StrategyBoard {
-  readonly possibleMoves: readonly Move[];
+  readonly validMoves: readonly Move[];
   readonly isCheck: boolean;
 }
 

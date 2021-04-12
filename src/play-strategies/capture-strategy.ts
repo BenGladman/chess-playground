@@ -22,7 +22,7 @@ export class CaptureStrategy implements PlayStrategy {
   name = "CaptureStrategy";
 
   play: PlayHandler = (board) => {
-    const possibleMoves = [...board.possibleMoves].sort(moveComparitor);
-    return board.play(possibleMoves[0]);
+    const validMoves = [...board.validMoves].sort(moveComparitor);
+    return board.play(validMoves[0]);
   };
 }

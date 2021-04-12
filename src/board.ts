@@ -6,25 +6,27 @@ import {
   Playable,
   Visitor,
 } from "./core";
-import { PossibleMovesGenerator } from "./possible-moves";
+import { StrategyBoard } from "./play-strategies";
 import { Side } from "./side";
+import { ValidMovesBoard, ValidMovesGenerator } from "./valid-moves";
 
-export class Board implements BoardComponent, Playable<Board> {
+export class Board
+  implements BoardComponent, Playable<Board>, ValidMovesBoard, StrategyBoard {
   readonly sideToPlay: Side;
   readonly otherSide: Side;
   readonly moves: readonly Move[];
-  readonly possibleMovesGenerator: PossibleMovesGenerator;
+  readonly validMovesGenerator: ValidMovesGenerator;
 
   protected constructor(
     sideToPlay = Side.create(Color.White),
     otherSide = Side.create(Color.Black),
     moves: readonly Move[] = [],
-    possibleMovesGenerator = new PossibleMovesGenerator()
+    validMovesGenerator = new ValidMovesGenerator()
   ) {
     this.sideToPlay = sideToPlay;
     this.otherSide = otherSide;
     this.moves = moves;
-    this.possibleMovesGenerator = possibleMovesGenerator;
+    this.validMovesGenerator = validMovesGenerator;
   }
 
   get lastMove() {
@@ -36,7 +38,7 @@ export class Board implements BoardComponent, Playable<Board> {
       this.otherSide.play(move),
       this.sideToPlay.play(move),
       this.moves.concat(move),
-      this.possibleMovesGenerator
+      this.validMovesGenerator
     );
   }
 
@@ -44,13 +46,13 @@ export class Board implements BoardComponent, Playable<Board> {
     visitor.visitBoard(this);
   }
 
-  private _possibleMoves?: readonly Move[];
+  private _validMoves?: readonly Move[];
 
-  get possibleMoves(): readonly Move[] {
-    if (this._possibleMoves === undefined) {
-      this._possibleMoves = this.possibleMovesGenerator.generate(this);
+  get validMoves(): readonly Move[] {
+    if (this._validMoves === undefined) {
+      this._validMoves = this.validMovesGenerator.generate(this);
     }
-    return this._possibleMoves;
+    return this._validMoves;
   }
 
   private _isCheckOtherSide?: boolean;
@@ -58,7 +60,7 @@ export class Board implements BoardComponent, Playable<Board> {
   get isCheckOtherSide(): boolean {
     if (this._isCheckOtherSide === undefined) {
       this._isCheckOtherSide =
-        this.possibleMoves.find(
+        this.validMoves.find(
           (move) => move.capturePiece?.type === PieceType.King
         ) !== undefined;
     }
@@ -75,11 +77,11 @@ export class Board implements BoardComponent, Playable<Board> {
   }
 
   get isStaleMate(): boolean {
-    return !this.isCheck && this.possibleMoves.length === 0;
+    return !this.isCheck && this.validMoves.length === 0;
   }
 
   get isCheckMate(): boolean {
-    return this.isCheck && this.possibleMoves.length === 0;
+    return this.isCheck && this.validMoves.length === 0;
   }
 
   isCheckAfterMove(move: Move | null) {
@@ -87,13 +89,13 @@ export class Board implements BoardComponent, Playable<Board> {
       move ? this.otherSide.play(move) : this.otherSide,
       move ? this.sideToPlay.play(move) : this.sideToPlay,
       undefined,
-      this.possibleMovesGenerator
+      this.validMovesGenerator
     ).isCheckOtherSide;
   }
 
   get statusDescription(): string {
     const toPlayString = `${this.sideToPlay.color} to play`;
-    const movesString = `${this.possibleMoves.length} possible moves`;
+    const movesString = `${this.validMoves.length} valid moves`;
     return this.isCheckMate
       ? `CHECKMATE ${this.otherSide.color} wins`
       : this.isCheck

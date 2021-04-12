@@ -8,7 +8,7 @@ import {
   Visitor,
 } from "../core";
 
-export abstract class PossibleMoves implements Visitor {
+export abstract class ValidMovesVisitor implements Visitor {
   private _moves: Move[] = [];
   private pieces: readonly PieceComponent[] = [];
   protected isCheckAfterMove: (move: Move) => boolean;

@@ -4,9 +4,9 @@ export class RandomStrategy implements PlayStrategy {
   name = "RandomStrategy";
 
   play: PlayHandler = (board) => {
-    const possibleMoves = board.possibleMoves;
+    const validMoves = board.validMoves;
     const randomMove =
-      possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+      validMoves[Math.floor(Math.random() * validMoves.length)];
     return board.play(randomMove);
   };
 }

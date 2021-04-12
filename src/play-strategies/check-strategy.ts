@@ -9,7 +9,7 @@ export class CheckStrategy implements PlayStrategy {
   name = "CheckStrategy";
 
   play: PlayHandler = (board) => {
-    const nextBoards = board.possibleMoves
+    const nextBoards = board.validMoves
       .map((move) => board.play(move))
       .sort(boardComparitor);
 

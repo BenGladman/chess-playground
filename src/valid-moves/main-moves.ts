@@ -1,7 +1,7 @@
 import { PieceComponent } from "../core";
-import { PossibleMoves } from "./possible-moves";
+import { ValidMovesVisitor } from "./valid-moves-visitor";
 
-export class PossibleMainMoves extends PossibleMoves {
+export class MainMoves extends ValidMovesVisitor {
   private tryMove(
     piece: PieceComponent,
     { start = piece.position, addFile = 0, addRank = 0, recurse = false } = {}
